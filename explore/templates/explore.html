@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'explore/css/explore.css' %}">
+
+<div class="main-container">
+  <!-- Main content -->
+  <section class="content">
+    <h1>{{ title|capfirst }}</h1>
+
+    <nav class="menu">
+      {% for item in menu %}
+        <a href="{% url item.url_name %}">{{ item.name }}</a>
+        {% if not forloop.last %} | {% endif %}
+      {% endfor %}
+    </nav>
+
+    <h2>All crypto:</h2>
+    <div class="table-container">
+      {{ datacrypto|safe }}
+    </div>
+  </section>
+
+  <!-- Hidden sliding sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <h2> Today's Cap </h2>
+
+      <div class="sidebar-section">
+        <h3>Dominance</h3>
+        <div class="table-container">
+          {{ alldom|safe }}
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Total Cap</h3>
+        <p>{{ total_cap }}</p>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Fear and Greed</h3>
+        <p>
+          {% for item in fg %}
+            <span>{{ item }}</span>{% if not forloop.last %} | {% endif %}
+          {% endfor %}
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

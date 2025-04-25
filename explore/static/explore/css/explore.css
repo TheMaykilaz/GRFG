@@ -1,0 +1,99 @@
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.table-container th, .table-container td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.table-container th {
+    background-color: #A9A9A9;
+    font-weight: bold;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar h2 {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20px;
+  position: relative;
+}
+
+/* Sidebar wrapper */
+.sidebar {
+  width: 40px; /* allows hover area */
+  overflow: hidden;
+  transition: width 0.3s ease;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  z-index: 1000;
+  background-color: #f8f9fa;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+/* Reveal on hover */
+.sidebar:hover {
+  width: 320px;
+}
+
+/* Inner sidebar content */
+.sidebar-inner {
+  width: 300px;
+  padding: 20px;
+}
+
+/* Main content area */
+.content {
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
