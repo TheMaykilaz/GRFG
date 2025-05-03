@@ -1,6 +1,7 @@
 Calendar America
 Dynamic updating data
 
-
+1efd78f7-2202-40e2-94e5-1aa842c1800c
 Center cryptovaluyta i zakladki z vidstegyvanimi monetami
 
+{#      <a href="{% url 'articles-page' %}"> -> Перейти на сторінку </a>#}

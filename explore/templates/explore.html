@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="{% static 'explore/css/explore.css' %}">
 
 <div class="main-container">
-  <!-- Main content -->
   <section class="content">
     <h1>{{ title|capfirst }}</h1>
 
@@ -17,11 +16,26 @@
 
     <h2>All crypto:</h2>
     <div class="table-container">
-      {{ datacrypto|safe }}
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Price (USD)</th>
+            <th>1h %</th>
+            <th>24h %</th>
+            <th>7d %</th>
+            <th>Market Cap</th>
+            <th>Volume (24h)</th>
+          </tr>
+        </thead>
+        <tbody id="crypto-data">
+          <!-- JS вставить сюди рядки -->
+        </tbody>
+      </table>
     </div>
   </section>
 
-  <!-- Hidden sliding sidebar -->
   <aside class="sidebar">
     <div class="sidebar-inner">
       <h2> Today's Cap </h2>
@@ -49,4 +63,41 @@
     </div>
   </aside>
 </div>
+
+<!-- JS: краще додавати в самому кінці body -->
+<script>
+  async function fetchCryptos() {
+    try {
+      const response = await fetch("{% url 'crypto-list-api' %}");
+      const data = await response.json();
+
+      const tbody = document.getElementById("crypto-data");
+      tbody.innerHTML = "";
+
+      data.forEach(token => {
+        const row = `
+          <tr>
+            <td>${token.name}</td>
+            <td>${token.symbol}</td>
+            <td>$${parseFloat(token.price).toFixed(2)}</td>
+            <td>${token.percent_1h}%</td>
+            <td>${token.percent_24h}%</td>
+            <td>${token.percent_7d}%</td>
+            <td>$${Number(token.market_cap).toLocaleString()}</td>
+            <td>$${Number(token.volume_24h).toLocaleString()}</td>
+          </tr>
+        `;
+        tbody.insertAdjacentHTML("beforeend", row);
+      });
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  }
+
+  // Викликаємо при завантаженні
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchCryptos();
+    setInterval(fetchCryptos, 10000); // кожні 10 секунд
+  });
+</script>
 {% endblock %}

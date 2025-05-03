@@ -1,7 +1,5 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-from whitelist.menu_data import main_menu
-
+from blacklist.menu_data import main_menu
 
 
 def home(request):

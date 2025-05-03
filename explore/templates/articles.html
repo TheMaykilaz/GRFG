@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
-{% block   content %}
-<h1> Articles </h1>
-    <p>
-    {% for item in menu %}
-        <a href="{% url item.url_name %}">{{ item.name }}</a>
-        {% if not forloop.last %} | {% endif %}
-    {% endfor %}
 
-</p>
-{% endblock  %}
+{% block content %}
+<h1>Свіжі статті</h1>
+
+<ul>
+  {% for article in articles %}
+  <li>
+    <a href="{% url 'articles-page' article.id_a %}">
+      {{ article.id_a }}. {{ article.title }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
