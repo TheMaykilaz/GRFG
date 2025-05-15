@@ -4,6 +4,9 @@ main_menu = [
     {'name': 'Головна', 'url_name': 'home'},
     {'name': 'Дізнатися', 'url_name': 'explore'},
     {'name': 'Про нас', 'url_name': 'about'},
+    {'name': 'Реєстрація', 'url_name': 'account:registration'},
+    {'name': 'Вхід', 'url_name': 'account:login'},
+    {'name': 'Налаштування', 'url_name': 'account:settings'},
 ]
 
 explore_menu = [

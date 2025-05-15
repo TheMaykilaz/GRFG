@@ -1,99 +1,95 @@
+body {
+  background-color: #000; /* повністю чорний фон */
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Таблиця */
 .table-container table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
+    background-color: #000; /* чорний фон */
+    color: #fff;
+    font-size: 14px;
 }
 
 .table-container th, .table-container td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    border: 1px solid #333;
+    padding: 10px;
     text-align: center;
+    color: #fff; /* білий текст */
 }
 
 .table-container th {
-    background-color: #A9A9A9;
-    font-weight: bold;
+    background-color: #111; /* трохи відрізняється від основного */
+    font-weight: 600;
 }
 
+/* Додаткові стилі для від'ємних/додатних змін */
+.table-container td.positive {
+    color: #00e676;
+    font-weight: 600;
+}
+
+.table-container td.negative {
+    color: #ff5252;
+    font-weight: 600;
+}
+
+/* Головна структура */
 .main-container {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  padding: 20px;
-  text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
 }
 
-.sidebar {
-  width: 300px;
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.sidebar h2 {
-  margin-bottom: 10px;
-  font-size: 1.5em;
-}
-
-.sidebar-section {
-  margin-bottom: 20px;
-}
-
+/* Контент */
 .content {
-  flex-grow: 1;
+    flex-grow: 1;
+    margin-right: 20px;
 }
 
-.table-container {
-  overflow-x: auto;
-}
-
-.main-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 20px;
-  position: relative;
-}
-
-/* Sidebar wrapper */
+/* Бокова панель */
 .sidebar {
-  width: 40px; /* allows hover area */
-  overflow: hidden;
-  transition: width 0.3s ease;
-  position: fixed;
-  right: 0;
-  top: 0;
-  height: 100%;
-  z-index: 1000;
-  background-color: #f8f9fa;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+    width: 40px;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    z-index: 1000;
+    background-color: #0d0d0d; /* темно-чорний */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    color: #fff;
 }
 
-/* Reveal on hover */
 .sidebar:hover {
-  width: 320px;
+    width: 320px;
 }
 
-/* Inner sidebar content */
 .sidebar-inner {
-  width: 300px;
-  padding: 20px;
+    width: 300px;
+    padding: 20px;
+    color: #fff;
 }
 
-/* Main content area */
-.content {
-  flex-grow: 1;
-  margin-right: 20px;
+/* Заголовки й текст в боковій панелі */
+.sidebar h2, .sidebar h3, .sidebar p, .sidebar span {
+    color: #ffffff;
 }
 
-.sidebar-section {
-  margin-bottom: 20px;
+/* Навігаційне меню */
+.menu a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-right: 8px;
 }
 
-.table-container {
-  overflow-x: auto;
+.menu a:hover {
+    text-decoration: underline;
 }
-

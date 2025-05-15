@@ -8,6 +8,7 @@ from blacklist.menu_data import explore_menu
 from blacklist.parser_bitcoin import *
 from blacklist.explore_page import *
 from blacklist.article_news import *
+from blacklist.yahoo_indexis import *
 from django.http import JsonResponse
 
 
@@ -29,7 +30,7 @@ def explore(request):
 
 class CryptoTokenListAPI(APIView):
     def get(self, request):
-        get_top_cryptos()  # <- додай це тут
+        get_top_cryptos()
         tokens = CryptoToken.objects.all().values(
             'name', 'symbol', 'price', 'percent_1h',
             'percent_24h', 'percent_7d', 'market_cap', 'volume_24h'
@@ -72,6 +73,10 @@ def articles_page(request, article_id):
 
 
 def forum(request):
-    return render(request, 'forum.html', {'menu': explore_menu,
-                                          'title': 'forum'} )
+    context = {
+        'title': 'Forum',
+        'menu': explore_menu,
+    }
+    return render(request, 'forum.html', context)
+
 

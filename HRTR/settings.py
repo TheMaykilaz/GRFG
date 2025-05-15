@@ -43,12 +43,18 @@ INSTALLED_APPS = [
     'explore',
     'django_extensions',
     'rest_framework',
-    'django_celery_beat'
+    'django_celery_beat',
+    'account',
 
 ]
-
+AUTH_USER_MODEL = 'account.CustomUser'
+LOGIN_URL = 'account:login'
+LOGIN_REDIRECT_URL = 'account:home'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
