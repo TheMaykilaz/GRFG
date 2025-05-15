@@ -10,7 +10,10 @@ from blacklist.explore_page import *
 from blacklist.article_news import *
 from blacklist.yahoo_indexis import *
 from django.http import JsonResponse
-
+from .forms import ForumCommentForm
+from .models import ForumComment
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 def explore(request):
     dominance_data = get_cryptocurrency_dominance()
@@ -73,10 +76,28 @@ def articles_page(request, article_id):
 
 
 def forum(request):
+    comments = ForumComment.objects.order_by('-created_at')
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = ForumCommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.user = request.user
+                comment.save()
+                form = ForumCommentForm()  # очистити форму після відправки
+        else:
+            form = None  # неавторизований користувач
+    else:
+        form = ForumCommentForm() if request.user.is_authenticated else None
+
     context = {
-        'title': 'Forum',
+        'title': 'Форум',
         'menu': explore_menu,
+        'form': form,
+        'comments': comments,
     }
     return render(request, 'forum.html', context)
 
-
+def index(request):
+    return render(request, 'explore/index.html')

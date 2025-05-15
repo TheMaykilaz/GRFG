@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<h1 style="color: white;">Forum — Market Indices</h1>
+<h1>Форум — Коментарі</h1>
 
 <p>
     {% for item in menu %}
@@ -11,31 +11,27 @@
     {% endfor %}
 </p>
 
-<!-- Стилі -->
-<link rel="stylesheet" href="{% static 'explore/css/indices.css' %}">
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Опублікувати</button>
+    </form>
+{% else %}
+    <p>Тільки зареєстровані користувачі можуть писати коментарі. <a href="{% url 'account:login' %}">Увійдіть</a>.</p>
+{% endif %}
 
-<!-- Таблиця -->
-<table class="index-table" id="index-table">
-    <thead>
-        <tr>
-            <th>Symbol</th>
-            <th>Name</th>
-            <th>Exchange</th>
-            <th>Quote Type</th>
-            <th>Market Cap</th>
-            <th>Open</th>
-            <th>High</th>
-            <th>Low</th>
-            <th>Close</th>
-            <th>Volume</th>
-        </tr>
-    </thead>
-    <tbody id="index-body">
-        <!-- Дані буде довантажено динамічно -->
-    </tbody>
-</table>
+<hr>
 
-<!-- Скрипт -->
-<script src="{% static 'explore/js/indices.js' %}"></script>
-
+<h2>Коментарі</h2>
+<ul>
+    {% for comment in comments %}
+        <li>
+            <strong>{{ comment.user.email }}</strong> — {{ comment.created_at|date:"d.m.Y H:i" }}<br>
+            {{ comment.text|linebreaks }}
+        </li>
+    {% empty %}
+        <li>Поки що немає коментарів.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

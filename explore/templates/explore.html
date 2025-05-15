@@ -68,7 +68,7 @@
 <script>
   async function fetchCryptos() {
     try {
-      const response = await fetch("{% url 'crypto-list-api' %}");
+      const response = await fetch("{% url 'explore:crypto-list-api' %}");
       const data = await response.json();
 
       const tbody = document.getElementById("crypto-data");

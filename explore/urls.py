@@ -5,6 +5,8 @@ from explore.views import CryptoTokenListAPI
 from explore.views import *
 from .views import IndexDataAPI
 
+app_name = 'explore'
+
 urlpatterns = [
     path('', views.explore, name='explore'),
     path('forum/', views.forum, name='forum'),

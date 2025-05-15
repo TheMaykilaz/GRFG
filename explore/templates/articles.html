@@ -6,7 +6,7 @@
 <ul>
   {% for article in articles %}
   <li>
-    <a href="{% url 'articles-page' article.id_a %}">
+    <a href="{% url 'explore:articles-page' article.id_a %}">
       {{ article.id_a }}. {{ article.title }}
     </a>
   </li>

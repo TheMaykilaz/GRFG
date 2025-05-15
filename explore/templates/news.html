@@ -1,10 +1,42 @@
 {% extends 'base.html' %}
-{% block   content %}
+{% load static %}
+
+{% block content %}
 <h1> News </h1>
-    <p>
+<h1 style="color: white;">News — Market Indices</h1>
+
+<p>
     {% for item in menu %}
-        <a href="{% url item.url_name %}">{{ item.name }}</a>
+        <a href="{% url item.url_name %}" style="color: lightblue;">{{ item.name }}</a>
         {% if not forloop.last %} | {% endif %}
     {% endfor %}
 </p>
-{% endblock  %}
+
+<!-- Стилі -->
+<link rel="stylesheet" href="{% static 'explore/css/indices.css' %}">
+
+<!-- Таблиця -->
+<table class="index-table" id="index-table">
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Exchange</th>
+            <th>Quote Type</th>
+            <th>Market Cap</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
+        </tr>
+    </thead>
+    <tbody id="index-body">
+        <!-- Дані буде довантажено динамічно -->
+    </tbody>
+</table>
+
+<!-- Скрипт -->
+<script src="{% static 'explore/js/indices.js' %}"></script>
+
+{% endblock %}
