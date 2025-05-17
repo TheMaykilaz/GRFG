@@ -18,8 +18,11 @@ urlpatterns = [
     path('api/index-data/', IndexDataAPI.as_view(), name='get_index_data_api'),
     path('forum/<int:pk>/', views.forum_topic_detail, name='forum-topic-detail'),
     path('forum/<int:pk>/comment/', views.add_comment, name='add-comment'),
-    path('comment/<int:pk>/vote/', views.vote_comment, name='vote-comment'),
+    path('comment/<int:comment_id>/vote/', views.vote_comment, name='vote-comment'),
     path('forum/topics/', views.forum_topic_list, name='forum-topic-list'),
+    path('forum/new/', views.create_forum_topic, name='create-forum-topic'),
+    path('forum/<int:pk>/', views.forum_topic_detail, name='forum-topic-detail'),
+    
     #path("forum/vote/<int:comment_id>/<str:vote_type>/", views.vote_comment, name="vote_comment"),
 #
     path("forum/vote/<int:comment_id>/<str:vote_type>/", views.vote_comment_js, name="vote_comment"),

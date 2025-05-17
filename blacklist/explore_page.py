@@ -11,7 +11,8 @@ def get_top_cryptos():
     params = {
         'start': '1',
         'limit': 25,
-        'convert': 'USD'
+        'convert': 'USD',
+        'sparkline': 'true'
     }
 
     response = requests.get(url, headers=headers, params=params)
@@ -44,6 +45,7 @@ def get_top_cryptos():
                     'percent_7d': percent_7d,
                     'market_cap': market_cap,
                     'volume_24h': volume_24h,
+                    'sparkline_7d': quote['sparkline_7d']['price'],
                 }
             )
     else:

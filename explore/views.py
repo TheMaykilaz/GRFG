@@ -26,6 +26,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import CryptoToken
 from .serializers import CryptoTokenSerializer
 from .filters import CryptoTokenFilter
+from .models import ForumTopic
+from .forms import ForumTopicForm
 
 def explore(request):
     dominance_data = get_cryptocurrency_dominance()
@@ -49,12 +51,12 @@ class CryptoTokenSerializer(ModelSerializer):
         fields = ['name', 'symbol', 'price', 'percent_1h', 'percent_24h', 'percent_7d', 'market_cap', 'volume_24h']
 
 class CryptoTokenListAPI(generics.ListAPIView):
-    queryset = CryptoToken.objects.all()
+    queryset = CryptoToken.objects.all().order_by('-market_cap')
     serializer_class = CryptoTokenSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = CryptoTokenFilter
     search_fields = ['name', 'symbol']
-    ordering_fields = ['price', 'market_cap', 'percent_1h', 'percent_24h', 'percent_7d', 'volume_24h']
+    ordering_fields = ['price', 'market_cap', 'percent_1h', 'percent_24h', 'percent_7d', 'volume_24h', 'sparkline_7d']
 
 
 def news(request):
@@ -127,7 +129,7 @@ def forum_topic_list(request):
 
 def forum_topic_detail(request, pk):
     topic = get_object_or_404(ForumTopic, pk=pk)
-    comments = topic.comments.order_by('created_at')
+    comments = topic.forumcomment_set.order_by('created_at')  
     return render(request, 'forum/topic_detail.html', {
         'topic': topic,
         'comments': comments
@@ -140,29 +142,46 @@ def add_comment(request, pk):
         content = request.POST.get('content')
         if content:
             ForumComment.objects.create(topic=topic, user=request.user, content=content)
-    return redirect('forum-topic-detail', pk=pk)
+    return redirect('explore:forum-topic-detail', pk=pk)
+
+def vote_comment(request, comment_id):
+    comment = get_object_or_404(ForumComment, id=comment_id)
+    vote_type = request.POST.get('vote_type')  # 'upvote' або 'downvote'
+    
+    if vote_type not in ['upvote', 'downvote']:
+        return JsonResponse({'error': 'Invalid vote type'}, status=400)
+
+    is_upvote = True if vote_type == 'upvote' else False
+
+    vote, created = ForumCommentVote.objects.get_or_create(
+        user=request.user,
+        comment=comment,
+        defaults={'is_upvote': is_upvote}  # ⬅️ обов'язково додаємо
+    )
+
+    if not created:
+        if vote.is_upvote == is_upvote:
+            # повторне голосування → прибираємо голос
+            vote.delete()
+        else:
+            # змінюємо голос
+            vote.is_upvote = is_upvote
+            vote.save()
+
+    return redirect('explore:forum-topic-detail', pk=comment.topic.pk)
 
 @login_required
-def vote_comment(request, pk):
-    comment = get_object_or_404(ForumComment, pk=pk)
-    is_upvote = request.POST.get('vote') == 'up'
-
-    vote, created = ForumCommentVote.objects.get_or_create(user=request.user, comment=comment)
-    if not created and vote.is_upvote == is_upvote:
-        vote.delete()
-        comment.vote_count += -1 if is_upvote else 1
+def create_forum_topic(request):
+    if request.method == 'POST':
+        form = ForumTopicForm(request.POST)
+        if form.is_valid():
+            topic = form.save(commit=False)
+            topic.author = request.user
+            topic.save()
+            return redirect('explore:forum-topic-list')
     else:
-        vote.is_upvote = is_upvote
-        vote.save()
-        comment.vote_count += 1 if is_upvote else -1
-    comment.save()
-    return JsonResponse({'vote_count': comment.vote_count})
-
-
-def index(request):
-    return render(request, 'explore/index.html')
-
-
+        form = ForumTopicForm()
+    return render(request, 'forum/create_topic.html', {'form': form})
 
 #
 @login_required

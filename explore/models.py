@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import JSONField
 
 class CryptoToken(models.Model):
     name = models.CharField(max_length=255)
@@ -11,6 +12,7 @@ class CryptoToken(models.Model):
     percent_7d = models.FloatField()
     market_cap = models.DecimalField(max_digits=25, decimal_places=2)
     volume_24h = models.DecimalField(max_digits=25, decimal_places=2)
+    sparkline_7d = models.JSONField(default=list) 
 
     def __str__(self):
         return self.name
