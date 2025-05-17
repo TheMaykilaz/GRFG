@@ -16,7 +16,16 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from .models import *
+from rest_framework import generics, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from explore.models import CryptoToken
+from rest_framework.serializers import ModelSerializer
+from rest_framework import generics, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import CryptoToken
+from .serializers import CryptoTokenSerializer
+from .filters import CryptoTokenFilter
 
 def explore(request):
     dominance_data = get_cryptocurrency_dominance()
@@ -34,14 +43,18 @@ def explore(request):
 
 
 
-class CryptoTokenListAPI(APIView):
-    def get(self, request):
-        get_top_cryptos()
-        tokens = CryptoToken.objects.all().values(
-            'name', 'symbol', 'price', 'percent_1h',
-            'percent_24h', 'percent_7d', 'market_cap', 'volume_24h'
-        )
-        return Response(list(tokens))
+class CryptoTokenSerializer(ModelSerializer):
+    class Meta:
+        model = CryptoToken
+        fields = ['name', 'symbol', 'price', 'percent_1h', 'percent_24h', 'percent_7d', 'market_cap', 'volume_24h']
+
+class CryptoTokenListAPI(generics.ListAPIView):
+    queryset = CryptoToken.objects.all()
+    serializer_class = CryptoTokenSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = CryptoTokenFilter
+    search_fields = ['name', 'symbol']
+    ordering_fields = ['price', 'market_cap', 'percent_1h', 'percent_24h', 'percent_7d', 'volume_24h']
 
 
 def news(request):
@@ -78,58 +91,92 @@ def articles_page(request, article_id):
 
 
 
+# @login_required
+# def forum(request):
+#     if request.method == 'POST':
+#         form = ForumCommentForm(request.POST)
+#         if form.is_valid():
+#             parent_id = request.POST.get('parent_id')
+#             parent = None
+#             if parent_id:
+#                 parent = get_object_or_404(ForumComment, id=parent_id)
+
+#             comment = form.save(commit=False)
+#             comment.user = request.user
+#             comment.parent = parent
+#             comment.save()
+#             return redirect('explore:forum')
+#     else:
+#         form = ForumCommentForm()
+
+#     comments = ForumComment.objects.filter(parent__isnull=True).order_by('-created_at').prefetch_related('replies')
+#     context = {
+#         'menu': explore_menu,
+#         'title': 'Forum',
+#         'comments': comments,
+#         'form': form,
+#     }
+#     return render(request, 'forum.html', context)
+
+
+
+
+def forum_topic_list(request):
+    topics = ForumTopic.objects.order_by('-created_at')
+    return render(request, 'forum/topic_list.html', {'topics': topics})
+
+def forum_topic_detail(request, pk):
+    topic = get_object_or_404(ForumTopic, pk=pk)
+    comments = topic.comments.order_by('created_at')
+    return render(request, 'forum/topic_detail.html', {
+        'topic': topic,
+        'comments': comments
+    })
+
 @login_required
-def forum(request):
+def add_comment(request, pk):
+    topic = get_object_or_404(ForumTopic, pk=pk)
     if request.method == 'POST':
-        form = ForumCommentForm(request.POST)
-        if form.is_valid():
-            parent_id = request.POST.get('parent_id')
-            parent = None
-            if parent_id:
-                parent = get_object_or_404(ForumComment, id=parent_id)
-
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.parent = parent
-            comment.save()
-            return redirect('explore:forum')
-    else:
-        form = ForumCommentForm()
-
-    comments = ForumComment.objects.filter(parent__isnull=True).order_by('-created_at').prefetch_related('replies')
-    context = {
-        'menu': explore_menu,
-        'title': 'Forum',
-        'comments': comments,
-        'form': form,
-    }
-    return render(request, 'forum.html', context)
-
-
+        content = request.POST.get('content')
+        if content:
+            ForumComment.objects.create(topic=topic, user=request.user, content=content)
+    return redirect('forum-topic-detail', pk=pk)
 
 @login_required
-def vote_comment(request, comment_id, vote_type):
-    comment = get_object_or_404(ForumComment, id=comment_id)
-    user = request.user
+def vote_comment(request, pk):
+    comment = get_object_or_404(ForumComment, pk=pk)
+    is_upvote = request.POST.get('vote') == 'up'
 
-    if vote_type == 'up':
-        if user in comment.downvotes.all():
-            comment.downvotes.remove(user)
-        if user in comment.upvotes.all():
-            comment.upvotes.remove(user)
-        else:
-            comment.upvotes.add(user)
-
-    elif vote_type == 'down':
-        if user in comment.upvotes.all():
-            comment.upvotes.remove(user)
-        if user in comment.downvotes.all():
-            comment.downvotes.remove(user)
-        else:
-            comment.downvotes.add(user)
-
-    return JsonResponse({'score': comment.score()})
+    vote, created = ForumCommentVote.objects.get_or_create(user=request.user, comment=comment)
+    if not created and vote.is_upvote == is_upvote:
+        vote.delete()
+        comment.vote_count += -1 if is_upvote else 1
+    else:
+        vote.is_upvote = is_upvote
+        vote.save()
+        comment.vote_count += 1 if is_upvote else -1
+    comment.save()
+    return JsonResponse({'vote_count': comment.vote_count})
 
 
 def index(request):
     return render(request, 'explore/index.html')
+
+
+
+#
+@login_required
+def vote_comment_js(request, comment_id, vote_type):
+    comment = get_object_or_404(ForumComment, pk=comment_id)
+    is_upvote = vote_type == 'up'
+
+    vote, created = ForumCommentVote.objects.get_or_create(user=request.user, comment=comment)
+    if not created and vote.is_upvote == is_upvote:
+        vote.delete()
+        comment.vote_count += -1 if is_upvote else 1
+    else:
+        vote.is_upvote = is_upvote
+        vote.save()
+        comment.vote_count += 1 if is_upvote else -1
+    comment.save()
+    return JsonResponse({'score': comment.vote_count})

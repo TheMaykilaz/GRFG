@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ topic.title }}</h2>
+    <p>{{ topic.description }}</p>
+
+    <hr>
+
+    <h3>Коментарі</h3>
+    {% for comment in comments %}
+        <div class="comment" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <p><strong>{{ comment.user }}</strong> — {{ comment.created_at }}</p>
+            <p>{{ comment.content }}</p>
+
+            <form method="post" action="{% url 'explore:vote-comment' comment.pk %}">
+                {% csrf_token %}
+                <button type="submit" name="vote" value="up">👍</button>
+                <button type="submit" name="vote" value="down">👎</button>
+                <span>Votes: {{ comment.vote_count }}</span>
+            </form>
+        </div>
+    {% empty %}
+        <p>Коментарів ще немає.</p>
+    {% endfor %}
+
+    <hr>
+
+    <h3>Додати коментар</h3>
+    <form method="post" action="{% url 'explore:add-comment' topic.pk %}">
+        {% csrf_token %}
+        <textarea name="content" rows="4" cols="50" required></textarea><br>
+        <button type="submit">Додати</button>
+    </form>
+
+    <br>
+    <a href="{% url 'explore:forum-topic-list' %}">← Назад до списку тем</a>
+</div>
+{% endblock %}

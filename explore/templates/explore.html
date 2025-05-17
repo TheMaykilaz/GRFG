@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'explore/css/explore.css' %}">
 
@@ -13,6 +14,25 @@
         {% if not forloop.last %} | {% endif %}
       {% endfor %}
     </nav>
+
+    <!-- 🔍 Форма фільтрації -->
+    <form id="filters-form" class="filters-form">
+      <div class="filters">
+        <input type="text" id="search-input" name="search" placeholder="Search by name or symbol..." />
+        <input type="number" step="0.01" id="price-min" name="price_min" placeholder="Min Price" />
+        <input type="number" step="0.01" id="price-max" name="price_max" placeholder="Max Price" />
+
+        <select id="sort-select" name="ordering">
+          <option value="">Sort By</option>
+          <option value="price">Price ↑</option>
+          <option value="-price">Price ↓</option>
+          <option value="market_cap">Market Cap ↑</option>
+          <option value="-market_cap">Market Cap ↓</option>
+        </select>
+
+        <button type="submit">Filter</button>
+      </div>
+    </form>
 
     <h2>All crypto:</h2>
     <div class="table-container">
@@ -34,11 +54,14 @@
         </tbody>
       </table>
     </div>
+
+    <!-- 📄 Пагінація -->
+    <div id="pagination" class="pagination"></div>
   </section>
 
   <aside class="sidebar">
     <div class="sidebar-inner">
-      <h2> Today's Cap </h2>
+      <h2>Today's Cap</h2>
 
       <div class="sidebar-section">
         <h3>Dominance</h3>
@@ -64,17 +87,24 @@
   </aside>
 </div>
 
-<!-- JS: краще додавати в самому кінці body -->
+<!-- JS -->
 <script>
-  async function fetchCryptos() {
+  async function fetchCryptos(page = 1) {
+    const form = document.getElementById("filters-form");
+    const formData = new FormData(form);
+    formData.append("page", page);
+
+    const params = new URLSearchParams(formData);
+    const url = "{% url 'explore:crypto-list-api' %}?" + params.toString();
+
     try {
-      const response = await fetch("{% url 'explore:crypto-list-api' %}");
+      const response = await fetch(url);
       const data = await response.json();
 
       const tbody = document.getElementById("crypto-data");
       tbody.innerHTML = "";
 
-      data.forEach(token => {
+      data.results.forEach(token => {
         const row = `
           <tr>
             <td>${token.name}</td>
@@ -89,15 +119,30 @@
         `;
         tbody.insertAdjacentHTML("beforeend", row);
       });
+
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+
+      const currentPage = page;
+      if (data.previous) {
+        pagination.innerHTML += `<button onclick="fetchCryptos(${currentPage - 1})">Previous</button>`;
+      }
+      if (data.next) {
+        pagination.innerHTML += `<button onclick="fetchCryptos(${currentPage + 1})">Next</button>`;
+      }
+
     } catch (err) {
       console.error("Fetch error:", err);
     }
   }
 
-  // Викликаємо при завантаженні
   document.addEventListener("DOMContentLoaded", () => {
     fetchCryptos();
-    setInterval(fetchCryptos, 10000); // кожні 10 секунд
+
+    document.getElementById("filters-form").addEventListener("submit", e => {
+      e.preventDefault();
+      fetchCryptos(1);
+    });
   });
 </script>
 {% endblock %}

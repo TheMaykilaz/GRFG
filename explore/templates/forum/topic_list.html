@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Forums &gt; Counter-Strike</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Topic</th>
+            <th>Replies</th>
+            <th>Author</th>
+            <th>Activity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for topic in topics %}
+        <tr>
+            <td>
+                <a href="{% url 'forum-topic-detail' topic.pk %}">
+                    {{ topic.title }}
+                </a>
+            </td>
+            <td>{{ topic.comment_count }}</td>
+            <td>{{ topic.author.email }}</td>
+            <td>{{ topic.created_at|timesince }} ago</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

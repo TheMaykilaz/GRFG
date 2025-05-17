@@ -4,7 +4,7 @@ from .models import ForumComment
 class ForumCommentForm(forms.ModelForm):
     class Meta:
         model = ForumComment
-        fields = ['text']
+        fields = ['content']
         widgets = {
-            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'}),
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'}),
         }

@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-
+from django.utils import timezone
 
 class CryptoToken(models.Model):
     name = models.CharField(max_length=255)
@@ -24,18 +24,39 @@ class CryptoArticle(models.Model):
     is_published = models.BooleanField(default=True)
 
 
-class ForumComment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    parent = models.ForeignKey(
-        'self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE
-    )
-    upvotes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='upvoted_comments', blank=True)
-    downvotes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='downvoted_comments', blank=True)
+class ForumTopic(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'Comment by {self.user} at {self.created_at}'
+        return self.title
 
-    def score(self):
-        return self.upvotes.count() - self.downvotes.count()
+    def comment_count(self):
+        return self.comments.count()
+
+class ForumComment(models.Model):
+    topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    vote_count = models.IntegerField(default=0)
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='replies',
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f"{self.user.email} on {self.topic.title}"
+
+class ForumCommentVote(models.Model):
+    comment = models.ForeignKey(ForumComment, related_name='votes', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    is_upvote = models.BooleanField()
+
+    class Meta:
+        unique_together = ('comment', 'user')  # 1 vote per user per comment
