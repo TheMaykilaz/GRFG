@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/cryptos/', CryptoTokenListAPI.as_view(), name='crypto-list-api'),
     path('articles/<int:article_id>/', views.articles_page, name='articles-page'),
     path('api/index-data/', IndexDataAPI.as_view(), name='get_index_data_api'),
+     path('forum/vote/<int:comment_id>/<str:vote_type>/', views.vote_comment, name='vote_comment'),
 
 
 

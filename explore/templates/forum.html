@@ -2,36 +2,84 @@
 {% load static %}
 
 {% block content %}
-<h1>Форум — Коментарі</h1>
+<h1>{{ title }}</h1>
 
 <p>
     {% for item in menu %}
-        <a href="{% url item.url_name %}" style="color: lightblue;">{{ item.name }}</a>
+        <a href="{% url item.url_name %}">{{ item.name }}</a>
         {% if not forloop.last %} | {% endif %}
     {% endfor %}
 </p>
 
-{% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Опублікувати</button>
-    </form>
-{% else %}
-    <p>Тільки зареєстровані користувачі можуть писати коментарі. <a href="{% url 'account:login' %}">Увійдіть</a>.</p>
-{% endif %}
+<form method="post" action="{% url 'explore:forum' %}">
+    {% csrf_token %}
+    {{ form.text }}
+    <button type="submit">Додати коментар</button>
+</form>
 
 <hr>
 
-<h2>Коментарі</h2>
-<ul>
+<ul class="comments-list">
     {% for comment in comments %}
         <li>
-            <strong>{{ comment.user.email }}</strong> — {{ comment.created_at|date:"d.m.Y H:i" }}<br>
-            {{ comment.text|linebreaks }}
+            <p><strong>{{ comment.user.email|default:"Анонім" }}</strong> ({{ comment.created_at|date:"Y-m-d H:i" }}):</p>
+            <p>{{ comment.text }}</p>
+            <p>
+                <a href="#" class="vote-btn" data-id="{{ comment.id }}" data-vote="up">👍</a>
+                <a href="#" class="vote-btn" data-id="{{ comment.id }}" data-vote="down">👎</a>
+                <span id="score-{{ comment.id }}">{{ comment.score }}</span>
+            </p>
+
+            <!-- Форма для підкоментаря -->
+            <form method="post" action="{% url 'explore:forum' %}">
+                {% csrf_token %}
+                <textarea name="text" rows="2" placeholder="Відповісти..."></textarea>
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <button type="submit">Відправити</button>
+            </form>
+
+            {% if comment.replies.all %}
+            <ul>
+                {% for reply in comment.replies.all %}
+                <li>
+                    <p><strong>{{ reply.user.email|default:"Анонім" }}</strong> ({{ reply.created_at|date:"Y-m-d H:i" }}):</p>
+                    <p>{{ reply.text }}</p>
+                    <p>
+                        <a href="#" class="vote-btn" data-id="{{ reply.id }}" data-vote="up">👍</a>
+                        <a href="#" class="vote-btn" data-id="{{ reply.id }}" data-vote="down">👎</a>
+                        <span id="score-{{ reply.id }}">{{ reply.score }}</span>
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </li>
     {% empty %}
         <li>Поки що немає коментарів.</li>
     {% endfor %}
 </ul>
+
+<script>
+document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const commentId = this.dataset.id;
+        const voteType = this.dataset.vote;
+
+        fetch("{% url 'explore:vote_comment' 0 'up' %}".replace('0/up', commentId + '/' + voteType), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('score-' + commentId).textContent = data.score;
+        });
+    });
+});
+</script>
+
 {% endblock %}

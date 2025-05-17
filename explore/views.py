@@ -14,6 +14,9 @@ from .forms import ForumCommentForm
 from .models import ForumComment
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+
 
 def explore(request):
     dominance_data = get_cryptocurrency_dominance()
@@ -75,29 +78,58 @@ def articles_page(request, article_id):
 
 
 
+@login_required
 def forum(request):
-    comments = ForumComment.objects.order_by('-created_at')
-
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            form = ForumCommentForm(request.POST)
-            if form.is_valid():
-                comment = form.save(commit=False)
-                comment.user = request.user
-                comment.save()
-                form = ForumCommentForm()  # очистити форму після відправки
-        else:
-            form = None  # неавторизований користувач
-    else:
-        form = ForumCommentForm() if request.user.is_authenticated else None
+        form = ForumCommentForm(request.POST)
+        if form.is_valid():
+            parent_id = request.POST.get('parent_id')
+            parent = None
+            if parent_id:
+                parent = get_object_or_404(ForumComment, id=parent_id)
 
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.parent = parent
+            comment.save()
+            return redirect('explore:forum')
+    else:
+        form = ForumCommentForm()
+
+    comments = ForumComment.objects.filter(parent__isnull=True).order_by('-created_at').prefetch_related('replies')
     context = {
-        'title': 'Форум',
         'menu': explore_menu,
-        'form': form,
+        'title': 'Forum',
         'comments': comments,
+        'form': form,
     }
     return render(request, 'forum.html', context)
+
+
+
+@login_required
+def vote_comment(request, comment_id, vote_type):
+    comment = get_object_or_404(ForumComment, id=comment_id)
+    user = request.user
+
+    if vote_type == 'up':
+        if user in comment.downvotes.all():
+            comment.downvotes.remove(user)
+        if user in comment.upvotes.all():
+            comment.upvotes.remove(user)
+        else:
+            comment.upvotes.add(user)
+
+    elif vote_type == 'down':
+        if user in comment.upvotes.all():
+            comment.upvotes.remove(user)
+        if user in comment.downvotes.all():
+            comment.downvotes.remove(user)
+        else:
+            comment.downvotes.add(user)
+
+    return JsonResponse({'score': comment.score()})
+
 
 def index(request):
     return render(request, 'explore/index.html')

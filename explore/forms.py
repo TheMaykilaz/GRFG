@@ -6,5 +6,5 @@ class ForumCommentForm(forms.ModelForm):
         model = ForumComment
         fields = ['text']
         widgets = {
-            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Ваш коментар...'}),
+            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Напишіть коментар...'}),
         }
