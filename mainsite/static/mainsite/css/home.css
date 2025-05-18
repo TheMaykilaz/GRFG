@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #000;
+    color: #fff;
+}
+
+.hero-section {
+    position: relative;
+    background: url('/static/mainsite/img/bg.png') no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding-left: 5%;
+}
+
+.hero-text {
+    max-width: 600px;
+    z-index: 2;
+}
+
+h1 {
+    font-size: 3em;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+p {
+    font-size: 1.2em;
+    margin-top: 1em;
+}
+
+a.btn {
+    display: inline-block;
+    margin-top: 1.5em;
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    background: linear-gradient(to right, #4facfe, #9b59b6);
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+a.btn:hover {
+    transform: scale(1.05);
+}
+
+.small-text {
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    opacity: 0.7;
+}
+
+/* Анімації */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s forwards;
+}
+
+.delay-1 {
+    animation-delay: 0.5s;
+}
+
+.delay-2 {
+    animation-delay: 1s;
+}
+
+.delay-3 {
+    animation-delay: 1.5s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

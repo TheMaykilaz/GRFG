@@ -3,13 +3,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ title|capfirst  }}</title>
+    <title>{{ title|capfirst }}</title>
     <link rel="stylesheet" href="{% static 'HRTR/css/base.css' %}">
+     {% block head %}{% endblock %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
+        main {
+            flex: 1 0 auto;
+        }
+
+        .user-box {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            text-align: right;
+        }
+
+        .user-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 5px;
+            z-index: 1000;
+        }
+
+        .user-box:hover .user-menu {
+            display: block;
+        }
+
+        .user-menu a {
+            display: block;
+            margin: 5px 0;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .user-menu a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-{% block   content %}
 
- {% endblock  %}
+<div class="user-box">
+    {% if user.is_authenticated %}
+        <span style="cursor: pointer;">👤 {{ user.email }}</span>
+        <div class="user-menu">
+            <p><strong>Ім'я:</strong> {{ user.get_full_name|default:"(не вказано)" }}</p>
+            <p><strong>Телефон:</strong> {{ user.phone|default:"(не вказано)" }}</p>
+            <a href="{% url 'account:settings' %}">Налаштування</a>
+            <a> Вийти </a>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}">Увійти</a> |
+        <a href="{% url 'register' %}">Реєстрація</a>
+    {% endif %}
+</div>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+{% include 'footer.html' %}
+
 </body>
 </html>

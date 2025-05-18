@@ -9,6 +9,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('explore/', include('explore.urls')),
     path('account/', include('account.urls')),
+    
 
 
 ]
