@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import CryptoToken
@@ -28,6 +29,7 @@ from .serializers import CryptoTokenSerializer
 from .filters import CryptoTokenFilter
 from .models import ForumTopic
 from .forms import ForumTopicForm
+from django.views.generic import DetailView
 
 def explore(request):
     dominance_data = get_cryptocurrency_dominance()
@@ -40,6 +42,7 @@ def explore(request):
         'alldom': dominance_data.to_html(index=False, classes="dom-table"),
         'total_cap': total_cap,
         'fg': fg,
+        'crypto_detail_url': reverse('explore:crypto-detail', kwargs={'symbol': 'REPLACE'}).replace('REPLACE', ''),
     }
     return render(request, 'explore.html', context)
 
@@ -91,7 +94,13 @@ def articles_page(request, article_id):
     }
     return render(request, 'articles_page.html', context)
 
-
+class CryptoDetailView(DetailView):
+    template_name = 'explore/crypto_detail.html'  # Correct path to template
+    context_object_name = 'crypto'
+    
+    def get_object(self):
+        symbol = self.kwargs.get('symbol').upper()
+        return get_object_or_404(CryptoToken, symbol=symbol)
 
 # @login_required
 # def forum(request):

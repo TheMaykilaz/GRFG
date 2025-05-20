@@ -22,6 +22,7 @@ urlpatterns = [
     path('forum/topics/', views.forum_topic_list, name='forum-topic-list'),
     path('forum/new/', views.create_forum_topic, name='create-forum-topic'),
     path('forum/<int:pk>/', views.forum_topic_detail, name='forum-topic-detail'),
+    path('crypto/<str:symbol>/', views.CryptoDetailView.as_view(), name='crypto-detail'),
     
     #path("forum/vote/<int:comment_id>/<str:vote_type>/", views.vote_comment, name="vote_comment"),
 #

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     'account',
+    'django.contrib.humanize',
 
 ]
 AUTH_USER_MODEL = 'account.CustomUser'

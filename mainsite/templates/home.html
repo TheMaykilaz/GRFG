@@ -9,10 +9,10 @@
     <div class="hero-text">
         <h1 class="fade-in">Look first /<br> Then leap.</h1>
         <p class="fade-in delay-1">Спочатку підготовка, потім дія. Так створюються найкращі угоди. Почни своє майбутня тут.</p>
-        <a href="#" class="btn fade-in delay-2">Зареєструватися безкоштовно</a>
+        <a href="{% url 'account:registration' %}" class="btn fade-in delay-2">Зареєструватися безкоштовно</a>
         <p class="small-text fade-in delay-3"></p>
         <p>
-            {% for item in menu %}
+            {% for item in home_menu %}
                 <a href="{% url item.url_name %}">{{ item.name }}</a>{% if not forloop.last %} | {% endif %}
             {% endfor %}
         </p>

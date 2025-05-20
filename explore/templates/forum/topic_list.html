@@ -6,7 +6,7 @@
   {% if user.is_authenticated %}
     <a href="{% url 'explore:create-forum-topic' %}" class="btn btn-primary" style="margin: 10px 0; display: inline-block;">➕ Create Topic</a>
   {% else %}
-    <p><a href="{% url 'login' %}">Login</a> to create a topic.</p>
+    <p><a href="{% url 'account:login' %}">Login</a> to create a topic.</p>
   {% endif %}
 
   {% if topics %}

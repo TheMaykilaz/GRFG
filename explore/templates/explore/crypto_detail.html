@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load static humanize %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'explore/css/crypto_detail.css' %}">
+
+<div class="crypto-detail-container">
+    <h1>{{ crypto.name }} ({{ crypto.symbol }})</h1>
+    
+    <div class="price-section">
+        <h2>${{ crypto.price|floatformat:2 }}</h2>
+        <div class="price-change">
+            <span class="{% if crypto.percent_24h >= 0 %}positive{% else %}negative{% endif %}">
+                {{ crypto.percent_24h|floatformat:2 }}%
+            </span>
+            <span>(24h)</span>
+        </div>
+    </div>
+    
+    <div class="details-grid">
+        <div class="detail-card">
+            <h3>Market Cap</h3>
+            <p>${{ crypto.market_cap|intcomma }}</p>
+        </div>
+        <div class="detail-card">
+            <h3>Volume (24h)</h3>
+            <p>${{ crypto.volume_24h|intcomma }}</p>
+        </div>
+        <div class="detail-card">
+            <h3>1h Change</h3>
+            <p class="{% if crypto.percent_1h >= 0 %}positive{% else %}negative{% endif %}">
+                {{ crypto.percent_1h|floatformat:2 }}%
+            </p>
+        </div>
+        <div class="detail-card">
+            <h3>7d Change</h3>
+            <p class="{% if crypto.percent_7d >= 0 %}positive{% else %}negative{% endif %}">
+                {{ crypto.percent_7d|floatformat:2 }}%
+            </p>
+        </div>
+    </div>
+    
+    <!-- Додаткові графіки або інформація можуть бути додані тут -->
+    
+    <a href="{% url 'explore:explore' %}" class="back-button">← Back to All Cryptos</a>
+</div>
+{% endblock %}

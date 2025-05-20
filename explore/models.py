@@ -5,17 +5,20 @@ from django.db.models import JSONField
 
 class CryptoToken(models.Model):
     name = models.CharField(max_length=255)
-    symbol = models.CharField(max_length=20)
+    symbol = models.CharField(max_length=20, unique=True)  # Додано unique=True
     price = models.DecimalField(max_digits=20, decimal_places=2)
     percent_1h = models.FloatField()
     percent_24h = models.FloatField()
     percent_7d = models.FloatField()
     market_cap = models.DecimalField(max_digits=25, decimal_places=2)
     volume_24h = models.DecimalField(max_digits=25, decimal_places=2)
-    sparkline_7d = models.JSONField(default=list) 
+    sparkline_7d = models.JSONField(default=list)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.symbol})"
+    
+    class Meta:
+        ordering = ['-market_cap'] 
 
 
 class CryptoArticle(models.Model):

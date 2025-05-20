@@ -64,8 +64,8 @@
             <a> Вийти </a>
         </div>
     {% else %}
-        <a href="{% url 'login' %}">Увійти</a> |
-        <a href="{% url 'register' %}">Реєстрація</a>
+        <a href="{% url 'account:login' %}">Увійти</a> |
+        <a href="{% url 'account:registration' %}">Реєстрація</a>
     {% endif %}
 </div>
 

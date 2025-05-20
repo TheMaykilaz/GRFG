@@ -104,11 +104,25 @@
       const tbody = document.getElementById("crypto-data");
       tbody.innerHTML = "";
 
+      // Використовуємо Set для відстеження унікальних символів
+      const uniqueSymbols = new Set();
+
       data.results.forEach(token => {
+        // Приводимо символ до верхнього регістру для порівняння
+        const symbolUpper = token.symbol.toUpperCase();
+        
+        // Пропускаємо дублікати
+        if (uniqueSymbols.has(symbolUpper)) {
+          console.warn(`Duplicate skipped: ${token.symbol}`);
+          return;
+        }
+        uniqueSymbols.add(symbolUpper);
+
         const row = `
-          <tr>
+          <tr onclick="window.location.href='{% url 'explore:crypto-detail' 'REPLACE' %}'.replace('REPLACE', '${token.symbol.toLowerCase()}')" 
+              style="cursor: pointer;">
             <td>${token.name}</td>
-            <td>${token.symbol}</td>
+            <td>${symbolUpper}</td> <!-- Виводимо у верхньому регістрі -->
             <td>$${parseFloat(token.price).toFixed(2)}</td>
             <td>${token.percent_1h}%</td>
             <td>${token.percent_24h}%</td>
@@ -120,6 +134,7 @@
         tbody.insertAdjacentHTML("beforeend", row);
       });
 
+      // Пагінація (залишається без змін)
       const pagination = document.getElementById("pagination");
       pagination.innerHTML = "";
 
