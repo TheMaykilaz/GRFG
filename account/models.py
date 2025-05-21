@@ -6,6 +6,8 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    wallet_initials = models.CharField(max_length=10, blank=True, null=True, verbose_name="Ініціали гаманця")
+    wallet_address = models.CharField(max_length=255, blank=True, null=True, verbose_name="Адреса гаманця")
     phone_validator = RegexValidator(
         regex=r'^\+?1?\d{10,15}$',
         message="Phone number must be entered in the format: '+380123456789'. Up to 15 digits allowed."

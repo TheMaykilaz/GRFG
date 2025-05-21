@@ -34,6 +34,8 @@
             padding: 10px;
             margin-top: 5px;
             z-index: 1000;
+            min-width: 200px;
+            border-radius: 5px;
         }
 
         .user-box:hover .user-menu {
@@ -45,10 +47,23 @@
             margin: 5px 0;
             text-decoration: none;
             color: #5fa3ff;
+            padding: 5px;
+            border-radius: 3px;
         }
 
         .user-menu a:hover {
-            text-decoration: underline;
+            background-color: #333;
+            text-decoration: none;
+        }
+
+        .user-menu p {
+            margin: 5px 0;
+            color: #aaa;
+            padding: 5px;
+        }
+
+        .user-menu strong {
+            color: #ddd;
         }
 
         /* Оновлений стиль для хедера у стилі футера */
@@ -59,6 +74,7 @@
             border-bottom: 1px solid #333;
             width: 100%;
             box-sizing: border-box;
+            position: relative;
         }
 
         .main-nav {
@@ -90,6 +106,13 @@
 
         .user-box span {
             color: #aaa;
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px;
+        }
+
+        .user-box span:hover {
+            color: #5fa3ff;
         }
 
         /* Світла тема за замовчуванням */
@@ -140,7 +163,6 @@
 
         body.home-page p {
             color: #ddd !important;
-            background: rgba(0, 0, 0, 0.6);
             padding: 10px 15px;
             border-radius: 8px;
             max-width: 600px;
@@ -164,6 +186,27 @@
             transform: scale(1.05);
             background-color: #7f5cbf;
         }
+
+        /* Стилі для форми виходу */
+        .logout-form {
+            display: inline;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #5fa3ff;
+            cursor: pointer;
+            font-size: inherit;
+            padding: 0;
+            font-family: inherit;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -174,22 +217,25 @@
         <a href="{% url 'explore:explore' %}">Дізнатися</a>
         <a href="{% url 'mainsite:about' %}">Про нас</a>
     </nav>
-</header>
 
-<div class="user-box">
-    {% if user.is_authenticated %}
-        <span style="cursor: pointer;">👤 {{ user.email }}</span>
-        <div class="user-menu">
-            <p><strong>Ім'я:</strong> {{ user.get_full_name|default:"(не вказано)" }}</p>
-            <p><strong>Телефон:</strong> {{ user.phone|default:"(не вказано)" }}</p>
-            <a href="{% url 'account:settings' %}">Налаштування</a>
-            <a href="#">Вийти</a>
-        </div>
-    {% else %}
-        <a href="{% url 'account:login' %}">Увійти</a> |
-        <a href="{% url 'account:registration' %}">Реєстрація</a>
-    {% endif %}
-</div>
+    <div class="user-box">
+        {% if user.is_authenticated %}
+            <span>👤 {{ user.email }}</span>
+            <div class="user-menu">
+                <p><strong>Ім'я:</strong> {{ user.get_full_name|default:"(не вказано)" }}</p>
+                <p><strong>Пошта:</strong> {{ user.email }}</p>
+                <a href="{% url 'account:settings' %}">Налаштування</a>
+                <form method="post" action="{% url 'account:logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Вийти</button>
+                </form>
+            </div>
+        {% else %}
+            <a href="{% url 'account:login' %}">Увійти</a> |
+            <a href="{% url 'account:registration' %}">Реєстрація</a>
+        {% endif %}
+    </div>
+</header>
 
 <main>
     {% block content %}

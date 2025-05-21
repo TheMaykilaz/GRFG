@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="logout-container">
+    <div class="logout-content">
+        <h2>Ви вийшли з акаунту</h2>
+        <p>Дякуємо, що скористалися нашим сервісом. Ви завжди можете увійти знову.</p>
+        
+        <div class="logout-actions">
+            <a href="{% url 'account:login' %}" class="btn-login">Увійти знову</a>
+            <a href="{% url 'mainsite:home' %}" class="btn-home">На головну</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .logout-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+        padding: 20px;
+    }
+    
+    .logout-content {
+        max-width: 500px;
+        text-align: center;
+        padding: 40px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logout-content h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+    
+    .logout-content p {
+        color: #555;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+    }
+    
+    .logout-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-login, .btn-home {
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login {
+        background-color: #4a76a8;
+        color: white;
+        border: 2px solid #4a76a8;
+    }
+    
+    .btn-login:hover {
+        background-color: #3a5f8a;
+        border-color: #3a5f8a;
+    }
+    
+    .btn-home {
+        background-color: transparent;
+        color: #4a76a8;
+        border: 2px solid #4a76a8;
+    }
+    
+    .btn-home:hover {
+        background-color: #f0f0f0;
+    }
+    
+    @media (max-width: 480px) {
+        .logout-content {
+            padding: 30px 20px;
+        }
+        
+        .logout-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .btn-login, .btn-home {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

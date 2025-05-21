@@ -17,6 +17,8 @@ class AccountRegistrationForm(UserCreationForm):
             'last_name',
             'email',
             'phone',
+            'wallet_initials',     # додано
+            'wallet_address',      # додано
             'password1',
             'password2',
         )
@@ -25,7 +27,7 @@ class AccountRegistrationForm(UserCreationForm):
 
 class ProfileForm(UserChangeForm):
     password = None
-    new_password = forms.CharField(required=False)
+    new_password = forms.CharField(required=False, label="Новий пароль")
 
     class Meta:
         model = CustomUser
@@ -33,5 +35,7 @@ class ProfileForm(UserChangeForm):
             'first_name',
             'last_name',
             'phone',
-            'new_password'
+            'wallet_initials',     # додано
+            'wallet_address',      # додано
+            'new_password',
         )

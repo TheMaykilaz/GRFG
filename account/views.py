@@ -7,6 +7,14 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import AccountLoginForm, AccountRegistrationForm, ProfileForm
 #
 from mainsite.models import *
+from django.shortcuts import render, redirect
+from django.contrib import auth, messages
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash, logout
+from django.views.decorators.http import require_POST
+from .forms import AccountLoginForm, AccountRegistrationForm, ProfileForm
 
 
 def login(request):
@@ -44,17 +52,23 @@ def registration(request):
     })
 
 @login_required
+@login_required
 def settings(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             user = form.save(commit=False)
             new_password = form.cleaned_data.get('new_password')
+
             if new_password:
                 user.set_password(new_password)
+                update_session_auth_hash(request, user)  # важливо!
+
             user.save()
-            update_session_auth_hash(request, user)
+            messages.success(request, "Зміни збережено успішно.")
             return redirect('account:settings')
+        else:
+            messages.error(request, "Будь ласка, виправте помилки у формі.")
     else:
         form = ProfileForm(instance=request.user)
     return render(request, 'account/settings.html', {'form': form})
@@ -64,3 +78,8 @@ def settings(request):
 def logout(request):
     auth.logout(request)
     return redirect(reverse('mainsite:home'))
+
+@require_POST
+def logout_view(request):
+    logout(request)
+    return render(request, 'account/logout.html')
