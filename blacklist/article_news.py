@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+import random
 
 def list_of_articles():
     url = "https://incrypted.com/ua/novyny/"
@@ -17,10 +18,19 @@ def list_of_articles():
         for idx, block in enumerate(title_blocks, start=1):
             a_tag = block.find('a')
             if a_tag:
+                article_url = a_tag['href'].strip()
+                article_title = a_tag.text.strip()
+
+                # Пошук блоку з картинкою
+                parent = block.find_parent('div', class_='incr_loop-item')
+                img_tag = parent.find('img') if parent else None
+                image_url = img_tag['src'] if img_tag and 'src' in img_tag.attrs else None
+
                 articles.append({
                     'id_a': idx,
-                    'title': a_tag.text.strip(),
-                    'link': a_tag['href'].strip()
+                    'title': article_title,
+                    'link': article_url,
+                    'image': image_url
                 })
 
     return articles
@@ -30,32 +40,36 @@ def list_of_articles():
 def text_in_article(article):
     url = article['link'] if article else None
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0"
     }
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
 
-
-        footer_elements = soup.find_all('p', class_='footer-contacts-deskr')
-        for footer_element in footer_elements:
+        # Очистка підвалу
+        for footer_element in soup.find_all('p', class_='footer-contacts-deskr'):
             footer_element.decompose()
-
-        documents_footer_elements = soup.find_all('p', class_='documents-footer-title')
-        for doc_footer_element in documents_footer_elements:
+        for doc_footer_element in soup.find_all('p', class_='documents-footer-title'):
             doc_footer_element.decompose()
 
-
+        # Отримати текст
         paragraphs = soup.find_all('p')
-
         paragraph_texts = [p.text.strip() for p in paragraphs]
 
+        # Імітація автора (реальний парсинг можна додати за потреби)
+        fake_authors = ["CryptoCat", "ChainWriter", "BlockBee", "AnonX", "NakamotoJunior"]
+        author = random.choice(fake_authors)
 
+        return {
+            'text': '\n'.join(paragraph_texts),
+            'author': author
+        }
 
-        return '\n'.join(paragraph_texts)
-
-    return "Текст не знайдено"
+    return {
+        'text': "Текст не знайдено",
+        'author': "Unknown"
+    }
 
 
 if __name__ == "__main__":

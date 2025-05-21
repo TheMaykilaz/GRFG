@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'explore/css/articles.css' %}">
 <h1>Свіжі статті</h1>
 
 <ul>
@@ -9,6 +11,11 @@
     <a href="{% url 'explore:articles-page' article.id_a %}">
       {{ article.id_a }}. {{ article.title }}
     </a>
+    {% if article.image %}
+      <div>
+        <img src="{{ article.image }}" alt="{{ article.title }}" style="max-width: 200px; margin-top: 10px;">
+      </div>
+    {% endif %}
   </li>
   {% endfor %}
 </ul>

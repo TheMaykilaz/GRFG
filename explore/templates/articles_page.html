@@ -1,13 +1,192 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title> Gordiy Top </title>
-
-
+    <title>Детальніше</title>
+    <link rel="stylesheet" href="{% static 'explore/css/articles.css' %}">
+    <style>
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .support-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .support-button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Стилі для модального вікна */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .wallet-option {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .wallet-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .wallet-address {
+            word-break: break-all;
+            font-family: monospace;
+            background-color: #eee;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            margin: 10px auto;
+            display: block;
+            border: 1px solid #ddd;
+        }
+        .copy-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<h1> Detalnishe: </h1>
-<h2> {{ paragraph }}</h2>
+
+<div class="article-detail-container">
+  <h1 class="page-title">{{ article.title }}</h1>
+
+  {% if article.image %}
+    <img src="{{ article.image }}" alt="{{ article.title }}" class="article-detail-image">
+  {% endif %}
+
+  <div class="article-text">
+    <p>{{ paragraph|linebreaks }}</p>
+  </div>
+
+  <div class="article-footer">
+      <div>Автор: <strong>{{ author }}</strong></div>
+      <button id="supportBtn" class="support-button">Підтримати</button>
+  </div>
+
+  <br>
+  <a href="{% url 'explore:articles' %}" class="back-link">← Назад до всіх статей</a>
+</div>
+
+<!-- Модальне вікно для підтримки -->
+<div id="supportModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Підтримати автора</h2>
+    
+    <div class="wallet-option">
+      <div class="wallet-title">TRC20 (USDT, TRX)</div>
+      <div class="wallet-address" id="trc20">TLb2r8Va8rmsvg18twCFqxd6ZLYp9hLFX2</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=TLb2r8Va8rmsvg18twCFqxd6ZLYp9hLFX2" alt="TRC20 QR Code" class="qr-code">
+      <button class="copy-btn" onclick="copyToClipboard('trc20')">Копіювати адресу</button>
+    </div>
+    
+    <div class="wallet-option">
+      <div class="wallet-title">Solana (SOL, USDC)</div>
+      <div class="wallet-address" id="solana">CzMrGoHRsDGdDWz7uDAe2AFpAPdXwGKo9YGvsebfj9bt</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=CzMrGoHRsDGdDWz7uDAe2AFpAPdXwGKo9YGvsebfj9bt" alt="Solana QR Code" class="qr-code">
+      <button class="copy-btn" onclick="copyToClipboard('solana')">Копіювати адресу</button>
+    </div>
+    
+    <div class="wallet-option">
+      <div class="wallet-title">ERC20 (ETH, USDT, USDC)</div>
+      <div class="wallet-address" id="erc20">0xfb32574d619d6076c89bab8037193a963fc3829e</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=0xfb32574d619d6076c89bab8037193a963fc3829e" alt="ERC20 QR Code" class="qr-code">
+      <button class="copy-btn" onclick="copyToClipboard('erc20')">Копіювати адресу</button>
+    </div>
+  </div>
+</div>
+
+<script>
+    // Отримуємо модальне вікно
+    var modal = document.getElementById("supportModal");
+    
+    // Отримуємо кнопку, яка відкриває модальне вікно
+    var btn = document.getElementById("supportBtn");
+    
+    // Отримуємо елемент <span>, який закриває модальне вікно
+    var span = document.getElementsByClassName("close")[0];
+    
+    // Коли користувач натискає на кнопку, відкриваємо модальне вікно
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+    
+    // Коли користувач натискає на <span> (x), закриваємо модальне вікно
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    
+    // Коли користувач клікає поза модальним вікном, закриваємо його
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    
+    // Функція для копіювання адреси в буфер обміну
+    function copyToClipboard(elementId) {
+        var copyText = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(copyText).then(function() {
+            alert("Адресу скопійовано в буфер обміну: " + copyText);
+        }, function() {
+            alert("Не вдалося скопіювати адресу");
+        });
+    }
+</script>
+
 </body>
 </html>

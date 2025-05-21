@@ -61,3 +61,21 @@
 .back-button:hover {
     background: #e9ecef;
 }
+
+.tradingview-chart-container {
+    margin: 30px 0;
+    width: 100%;
+    height: auto;
+    max-width: 1200px;  /* Додайте максимальну ширину */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tradingview-widget-container {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+

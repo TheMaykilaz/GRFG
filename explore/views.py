@@ -30,6 +30,7 @@ from .filters import CryptoTokenFilter
 from .models import ForumTopic
 from .forms import ForumTopicForm
 from django.views.generic import DetailView
+from django.http import HttpResponseNotFound
 
 def explore(request):
     dominance_data = get_cryptocurrency_dominance()
@@ -78,12 +79,12 @@ def articles(request):
 
 def articles_page(request, article_id):
     articles = list_of_articles()
-
-    # Перевірка на наявність статті за ID
     article = next((article for article in articles if article['id_a'] == article_id), None)
 
     if article:
-        paragraph = text_in_article(article)
+        article_content = text_in_article(article)
+        paragraph = article_content['text']
+        author = article_content['author']
     else:
         return HttpResponseNotFound("Статтю не знайдено")
 
@@ -91,6 +92,7 @@ def articles_page(request, article_id):
         'menu': explore_menu,
         'article': article,
         'paragraph': paragraph,
+        'author': author,
     }
     return render(request, 'articles_page.html', context)
 
