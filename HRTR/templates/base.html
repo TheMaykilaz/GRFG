@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>{{ title|capfirst }}</title>
     <link rel="stylesheet" href="{% static 'HRTR/css/base.css' %}">
-     {% block head %}{% endblock %}
+    {% block head %}{% endblock %}
     <style>
         html, body {
             height: 100%;
@@ -29,8 +29,8 @@
             display: none;
             position: absolute;
             right: 0;
-            background-color: #fff;
-            border: 1px solid #ccc;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
             padding: 10px;
             margin-top: 5px;
             z-index: 1000;
@@ -44,15 +44,137 @@
             display: block;
             margin: 5px 0;
             text-decoration: none;
-            color: #333;
+            color: #5fa3ff;
         }
 
         .user-menu a:hover {
             text-decoration: underline;
         }
+
+        /* Оновлений стиль для хедера у стилі футера */
+        .main-header {
+            background-color: #1a1a1a;
+            color: #aaa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .main-nav a {
+            color: #5fa3ff;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+
+        .main-nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Стилі для авторизації в темній темі */
+        .user-box a {
+            color: #5fa3ff;
+            text-decoration: none;
+        }
+
+        .user-box a:hover {
+            text-decoration: underline;
+        }
+
+        .user-box span {
+            color: #aaa;
+        }
+
+        /* Світла тема за замовчуванням */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        a:hover {
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        /* Темна тема для home-page */
+        body.home-page {
+            background: #000 !important;
+            color: #fff !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body.home-page h1 {
+            color: #fff !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+            margin-bottom: 20px;
+        }
+
+        body.home-page p {
+            color: #ddd !important;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 20px auto 0 auto;
+            text-align: center;
+        }
+
+        body.home-page a.btn {
+            background: linear-gradient(to right, #4facfe, #9b59b6);
+            color: white;
+            border-radius: 8px;
+            padding: 0.8em 1.5em;
+            font-size: 1em;
+            display: inline-block;
+            margin-top: 1.5em;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        body.home-page a.btn:hover {
+            transform: scale(1.05);
+            background-color: #7f5cbf;
+        }
     </style>
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
+
+<header class="main-header">
+    <nav class="main-nav">
+        <a href="{% url 'mainsite:home' %}">Головна</a>
+        <a href="{% url 'explore:explore' %}">Дізнатися</a>
+        <a href="{% url 'mainsite:about' %}">Про нас</a>
+    </nav>
+</header>
 
 <div class="user-box">
     {% if user.is_authenticated %}
@@ -61,7 +183,7 @@
             <p><strong>Ім'я:</strong> {{ user.get_full_name|default:"(не вказано)" }}</p>
             <p><strong>Телефон:</strong> {{ user.phone|default:"(не вказано)" }}</p>
             <a href="{% url 'account:settings' %}">Налаштування</a>
-            <a> Вийти </a>
+            <a href="#">Вийти</a>
         </div>
     {% else %}
         <a href="{% url 'account:login' %}">Увійти</a> |

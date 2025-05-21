@@ -1,20 +1,22 @@
 .site-footer {
-    background-color: #1a1a1a;
-    color: #aaa;
+    background-color: transparent; /* Забрали чорний фон */
+    color: #333; /* Темний текст замість світлого */
     padding: 20px;
     text-align: center;
     font-size: 14px;
-    border-top: 1px solid #333;
+    border-top: 1px solid #ccc; /* Світла межа замість темної */
     width: 100%;
     box-sizing: border-box;
 }
 
 .site-footer a {
-    color: #5fa3ff;
+    color: #3498db; /* Синій колір посилань */
     text-decoration: none;
     margin: 0 5px;
+    font-weight: 600;
 }
 
 .site-footer a:hover {
     text-decoration: underline;
 }
+

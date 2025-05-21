@@ -3,161 +3,263 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'explore/css/explore.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <div class="main-container">
   <section class="content">
-    <h1>{{ title|capfirst }}</h1>
-
-    <nav class="menu">
-      {% for item in menu %}
-        <a href="{% url item.url_name %}">{{ item.name }}</a>
-        {% if not forloop.last %} | {% endif %}
-      {% endfor %}
-    </nav>
-
-    <!-- 🔍 Форма фільтрації -->
-    <form id="filters-form" class="filters-form">
-      <div class="filters">
-        <input type="text" id="search-input" name="search" placeholder="Search by name or symbol..." />
-        <input type="number" step="0.01" id="price-min" name="price_min" placeholder="Min Price" />
-        <input type="number" step="0.01" id="price-max" name="price_max" placeholder="Max Price" />
-
-        <select id="sort-select" name="ordering">
-          <option value="">Sort By</option>
-          <option value="price">Price ↑</option>
-          <option value="-price">Price ↓</option>
-          <option value="market_cap">Market Cap ↑</option>
-          <option value="-market_cap">Market Cap ↓</option>
-        </select>
-
-        <button type="submit">Filter</button>
-      </div>
-    </form>
-
-    <h2>All crypto:</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th>Price (USD)</th>
-            <th>1h %</th>
-            <th>24h %</th>
-            <th>7d %</th>
-            <th>Market Cap</th>
-            <th>Volume (24h)</th>
-          </tr>
-        </thead>
-        <tbody id="crypto-data">
-          <!-- JS вставить сюди рядки -->
-        </tbody>
-      </table>
+    <!-- Заголовок -->
+    <div class="header-container">
+      <h1 class="page-title">
+        <span class="gradient-text">Explore</span>
+        <span class="subtitle"> Помагаємо твоєму DYOR </span>
+      </h1>
     </div>
 
-    <!-- 📄 Пагінація -->
+    <!-- Меню -->
+    <nav class="menu-container">
+      <div class="menu-items">
+        {% for item in menu %}
+          <a href="{% url item.url_name %}" class="menu-item">
+            <span class="menu-icon">
+              {% if item.name == "Форум" %}<i class="fas fa-comments"></i>
+              {% elif item.name == "Статті" %}<i class="fas fa-newspaper"></i>
+              {% elif item.name == "БрейкінгНьюс" %}<i class="fas fa-bolt"></i>
+              {% else %}<i class="fas fa-link"></i>{% endif %}
+            </span>
+            <span class="menu-text">{{ item.name }}</span>
+          </a>
+          {% if not forloop.last %}<div class="menu-divider"></div>{% endif %}
+        {% endfor %}
+      </div>
+    </nav>
+
+    <!-- Фільтри в одному рядку -->
+    <div class="filters-section">
+      <form id="filters-form" class="filters-form">
+        <div class="filters-header">
+          <i class="fas fa-sliders-h"></i>
+          <h3>Фільтри та сортування</h3>
+        </div>
+        
+        <div class="filters-row">
+          <!-- Пошук -->
+          <div class="filter-group search-group">
+            <label for="search-input"><i class="fas fa-search"></i> Пошук</label>
+            <input type="text" id="search-input" name="search" placeholder="BTC, Ethereum..." class="styled-input" />
+          </div>
+          
+          <!-- Ціновий діапазон -->
+          <div class="filter-group range-group">
+            <label><i class="fas fa-dollar-sign"></i> Ціна</label>
+            <div class="range-inputs">
+              <input type="number" step="0.01" id="price-min" name="price_min" placeholder="Від" class="styled-input" />
+              <span class="range-separator">—</span>
+              <input type="number" step="0.01" id="price-max" name="price_max" placeholder="До" class="styled-input" />
+            </div>
+          </div>
+          
+          <!-- Сортування -->
+          <div class="filter-group">
+            <label for="sort-select"><i class="fas fa-sort"></i> Сортування</label>
+            <select id="sort-select" name="ordering" class="styled-select">
+              <option value="">За замовчуванням</option>
+              <option value="price">Ціна ↑</option>
+              <option value="-price">Ціна ↓</option>
+              <option value="market_cap">Капіталізація ↑</option>
+              <option value="-market_cap">Капіталізація ↓</option>
+            </select>
+          </div>
+          
+          <!-- Кнопки -->
+          <div class="filter-group button-group">
+            <button type="submit" class="filter-button">
+              <i class="fas fa-filter"></i> Застосувати
+            </button>
+            <button type="reset" class="reset-button">
+              <i class="fas fa-redo"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Таблиця з чіткими заголовками -->
+    <div class="table-section">
+      <h2 class="section-title">All Cryptocurrencies</h2>
+      <div class="table-container">
+        <table class="crypto-table">
+          <thead>
+            <tr>
+              <th class="column-name">Name</th>
+              <th class="column-symbol">Symbol</th>
+              <th class="column-price">Price (USD)</th>
+              <th class="column-change">1h %</th>
+              <th class="column-change">24h %</th>
+              <th class="column-change">7d %</th>
+              <th class="column-cap">Market Cap</th>
+              <th class="column-volume">Volume (24h)</th>
+            </tr>
+          </thead>
+          <tbody id="crypto-data">
+            <!-- Дані будуть тут -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Пагінація -->
     <div id="pagination" class="pagination"></div>
   </section>
 
   <aside class="sidebar">
-    <div class="sidebar-inner">
-      <h2>Today's Cap</h2>
-
-      <div class="sidebar-section">
-        <h3>Dominance</h3>
-        <div class="table-container">
-          {{ alldom|safe }}
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <h3>Total Cap</h3>
-        <p>{{ total_cap }}</p>
-      </div>
-
-      <div class="sidebar-section">
-        <h3>Fear and Greed</h3>
-        <p>
-          {% for item in fg %}
-            <span>{{ item }}</span>{% if not forloop.last %} | {% endif %}
-          {% endfor %}
-        </p>
-      </div>
-    </div>
+    <!-- Бічна панель -->
   </aside>
 </div>
 
-<!-- JS -->
 <script>
-  async function fetchCryptos(page = 1) {
-    const form = document.getElementById("filters-form");
-    const formData = new FormData(form);
-    formData.append("page", page);
+  // Глобальні змінні для елементів DOM
+  const domElements = {
+    tbody: null,
+    pagination: null,
+    filtersForm: null
+  };
 
-    const params = new URLSearchParams(formData);
-    const url = "{% url 'explore:crypto-list-api' %}?" + params.toString();
+  // Ініціалізація DOM елементів
+  function initDOMElements() {
+    domElements.tbody = document.getElementById("crypto-data");
+    domElements.pagination = document.getElementById("pagination");
+    domElements.filtersForm = document.getElementById("filters-form");
+    
+    // Якщо якийсь елемент не знайдено, створюємо резервний варіант
+    if (!domElements.tbody) {
+      console.error("Element with ID 'crypto-data' not found");
+      const table = document.querySelector('.crypto-table');
+      if (table) {
+        domElements.tbody = document.createElement('tbody');
+        domElements.tbody.id = 'crypto-data';
+        table.appendChild(domElements.tbody);
+      }
+    }
+    
+    if (!domElements.pagination) {
+      console.error("Element with ID 'pagination' not found");
+      domElements.pagination = document.createElement('div');
+      domElements.pagination.id = 'pagination';
+      domElements.pagination.className = 'pagination';
+      document.querySelector('.content').appendChild(domElements.pagination);
+    }
+  }
+
+  async function fetchCryptos(page = 1) {
+    // Перевірка ініціалізації DOM елементів
+    if (!domElements.tbody || !domElements.pagination) {
+      console.error("DOM elements not initialized");
+      return;
+    }
 
     try {
+      const formData = new FormData(domElements.filtersForm);
+      formData.append("page", page);
+
+      const params = new URLSearchParams(formData);
+      const url = "{% url 'explore:crypto-list-api' %}?" + params.toString();
+
+      // Додаємо індикатор завантаження
+      domElements.tbody.innerHTML = '<tr><td colspan="8" class="loading-text">Loading data...</td></tr>';
+      domElements.pagination.innerHTML = '';
+
       const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
-      const tbody = document.getElementById("crypto-data");
-      tbody.innerHTML = "";
+      // Очищаємо таблицю
+      domElements.tbody.innerHTML = "";
 
-      // Використовуємо Set для відстеження унікальних символів
       const uniqueSymbols = new Set();
 
-      data.results.forEach(token => {
-        // Приводимо символ до верхнього регістру для порівняння
-        const symbolUpper = token.symbol.toUpperCase();
-        
-        // Пропускаємо дублікати
-        if (uniqueSymbols.has(symbolUpper)) {
-          console.warn(`Duplicate skipped: ${token.symbol}`);
-          return;
-        }
-        uniqueSymbols.add(symbolUpper);
+      if (data.results && data.results.length > 0) {
+        data.results.forEach(token => {
+          const symbolUpper = token.symbol.toUpperCase();
+          
+          if (uniqueSymbols.has(symbolUpper)) {
+            console.warn(`Duplicate skipped: ${token.symbol}`);
+            return;
+          }
+          uniqueSymbols.add(symbolUpper);
 
-        const row = `
-          <tr onclick="window.location.href='{% url 'explore:crypto-detail' 'REPLACE' %}'.replace('REPLACE', '${token.symbol.toLowerCase()}')" 
-              style="cursor: pointer;">
-            <td>${token.name}</td>
-            <td>${symbolUpper}</td> <!-- Виводимо у верхньому регістрі -->
-            <td>$${parseFloat(token.price).toFixed(2)}</td>
-            <td>${token.percent_1h}%</td>
-            <td>${token.percent_24h}%</td>
-            <td>${token.percent_7d}%</td>
-            <td>$${Number(token.market_cap).toLocaleString()}</td>
-            <td>$${Number(token.volume_24h).toLocaleString()}</td>
-          </tr>
-        `;
-        tbody.insertAdjacentHTML("beforeend", row);
-      });
+          const getChangeClass = (value) => {
+            const num = parseFloat(value);
+            if (num > 0) return 'positive-change';
+            if (num < 0) return 'negative-change';
+            return '';
+          };
 
-      // Пагінація (залишається без змін)
-      const pagination = document.getElementById("pagination");
-      pagination.innerHTML = "";
-
-      const currentPage = page;
-      if (data.previous) {
-        pagination.innerHTML += `<button onclick="fetchCryptos(${currentPage - 1})">Previous</button>`;
+          const row = `
+            <tr onclick="window.location.href='{% url 'explore:crypto-detail' 'REPLACE' %}'.replace('REPLACE', '${token.symbol.toLowerCase()}')" 
+                class="crypto-row">
+              <td class="crypto-name">${token.name}</td>
+              <td class="crypto-symbol">${symbolUpper}</td>
+              <td class="crypto-price">$${parseFloat(token.price).toFixed(2)}</td>
+              <td class="${getChangeClass(token.percent_1h)}">${token.percent_1h}%</td>
+              <td class="${getChangeClass(token.percent_24h)}">${token.percent_24h}%</td>
+              <td class="${getChangeClass(token.percent_7d)}">${token.percent_7d}%</td>
+              <td class="market-cap">$${Number(token.market_cap).toLocaleString()}</td>
+              <td class="volume">$${Number(token.volume_24h).toLocaleString()}</td>
+            </tr>
+          `;
+          domElements.tbody.insertAdjacentHTML("beforeend", row);
+        });
+      } else {
+        domElements.tbody.innerHTML = '<tr><td colspan="8" class="no-data-text">No cryptocurrencies found</td></tr>';
       }
+
+      // Оновлюємо пагінацію
+      domElements.pagination.innerHTML = "";
+
+      if (data.previous) {
+        domElements.pagination.innerHTML += `
+          <button class="pagination-button" onclick="fetchCryptos(${page - 1})">
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>`;
+      }
+      
       if (data.next) {
-        pagination.innerHTML += `<button onclick="fetchCryptos(${currentPage + 1})">Next</button>`;
+        domElements.pagination.innerHTML += `
+          <button class="pagination-button" onclick="fetchCryptos(${page + 1})">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>`;
       }
 
     } catch (err) {
       console.error("Fetch error:", err);
+      domElements.tbody.innerHTML = `
+        <tr>
+          <td colspan="8" class="error-text">
+            Failed to load data. Please try again later.
+          </td>
+        </tr>`;
+      domElements.pagination.innerHTML = '';
     }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    // Ініціалізуємо DOM елементи
+    initDOMElements();
+    
+    // Завантажуємо дані
     fetchCryptos();
 
-    document.getElementById("filters-form").addEventListener("submit", e => {
-      e.preventDefault();
-      fetchCryptos(1);
-    });
+    // Додаємо обробник подій для форми
+    if (domElements.filtersForm) {
+      domElements.filtersForm.addEventListener("submit", e => {
+        e.preventDefault();
+        fetchCryptos(1);
+      });
+    }
   });
 </script>
 {% endblock %}
