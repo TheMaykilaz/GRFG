@@ -15,61 +15,154 @@
   --negative: #ff5252;
 }
 
-/* Фільтри в один рядок */
+/* Стилі для фільтрів - компактніший варіант */
+.filters-section {
+  background: var(--darker);
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border);
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.filters-header h3 {
+  margin: 0;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
 .filters-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 15px;
+  gap: 10px;
+  align-items: center;
 }
 
 .filter-group {
   flex: 1;
-  min-width: 180px;
+  min-width: 150px;
 }
 
-/* Темний стиль фільтрів */
-.filters-section {
-  background: var(--darker);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 25px;
-  border: 1px solid var(--border);
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: var(--text-muted);
 }
 
 .styled-input, .styled-select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 6px;
   background: var(--darkest);
   border: 1px solid var(--border);
   color: var(--text);
 }
 
-.styled-input:focus, .styled-select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.2);
+.range-inputs {
+  display: flex;
+  align-items: center;
 }
 
-/* Заголовки таблиці */
+.range-inputs .styled-input {
+  width: 80px;
+}
+
+.range-separator {
+  margin: 0 5px;
+  color: var(--text-muted);
+}
+
+.filter-button, .reset-button {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filter-button {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.reset-button {
+  background: none;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  margin-left: 5px;
+}
+
+/* Велика таблиця */
+.table-section {
+  margin-top: 20px;
+}
+
+.section-title {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.crypto-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
 .crypto-table th {
   background: var(--darker);
   color: var(--text-light);
-  font-weight: 600;
+  padding: 12px 10px;
   text-align: left;
-  padding: 15px 12px;
+  font-weight: 500;
   position: sticky;
   top: 0;
-  z-index: 10;
+}
+
+.crypto-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.crypto-table tr:last-child td {
+  border-bottom: none;
+}
+
+.crypto-table tr:hover {
+  background: rgba(110, 69, 226, 0.1);
+  cursor: pointer;
 }
 
 /* Колонки */
-.column-name { width: 18%; }
-.column-symbol { width: 10%; }
+.column-name { width: 20%; }
+.column-symbol { width: 8%; }
 .column-price { width: 12%; }
-.column-change { width: 8%; }
+.column-change { width: 7%; }
 .column-cap { width: 20%; }
 .column-volume { width: 20%; }
 
+/* Кольори для змін */
+.positive-change {
+  color: var(--positive);
+}
+
+.negative-change {
+  color: var(--negative);
+}
+
 /* Адаптивність */
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
   .filters-row {
     flex-direction: column;
     align-items: stretch;
@@ -78,21 +171,24 @@
   .filter-group {
     min-width: 100%;
   }
-}
-
-@media (max-width: 768px) {
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
   .crypto-table {
     font-size: 13px;
   }
   
-  .crypto-table th {
-    padding: 10px 8px;
+  .crypto-table th, .crypto-table td {
+    padding: 8px 6px;
   }
   
-  .column-name { width: 20%; }
-  .column-symbol { width: 12%; }
+  .column-name { width: 22%; }
+  .column-symbol { width: 10%; }
   .column-price { width: 15%; }
-  .column-change { width: 10%; }
+  .column-change { width: 8%; }
   .column-cap { width: 18%; }
-  .column-volume { width: 18%; }
+  .column-volume { width: 17%; }
 }

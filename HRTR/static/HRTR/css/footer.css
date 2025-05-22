@@ -1,22 +1,29 @@
+/* Темний футер для всіх сторінок */
 .site-footer {
-    background-color: transparent; /* Забрали чорний фон */
-    color: #333; /* Темний текст замість світлого */
+    background-color: #121212 !important; /* Темний фон */
+    color: #ddd !important;              /* Світлий текст */
     padding: 20px;
     text-align: center;
     font-size: 14px;
-    border-top: 1px solid #ccc; /* Світла межа замість темної */
+    border-top: 1px solid #333;
     width: 100%;
     box-sizing: border-box;
 }
 
+/* Всередині футера — світлий текст */
+.site-footer * {
+    color: #ddd !important;
+}
+
+/* Посилання */
 .site-footer a {
-    color: #3498db; /* Синій колір посилань */
+    color: #66b2ff !important; /* Світло-синій для посилань */
     text-decoration: none;
     margin: 0 5px;
     font-weight: 600;
 }
 
+/* Hover для посилань */
 .site-footer a:hover {
     text-decoration: underline;
 }
-
