@@ -1,12 +1,218 @@
 {% extends 'base.html' %}
-{% block   content %}
+{% block content %}
 
-<h1>Про нашу компанію</h1>
-<p>
-    {% for item in menu %}
-        <a href="{% url item.url_name %}">{{ item.name }}</a>
-        {% if not forloop.last %} | {% endif %}
-    {% endfor %}
-</p>
+<style>
+    .about-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+    
+    .about-header {
+        text-align: center;
+        margin-bottom: 40px;
+        color: #2c3e50;
+    }
+    
+    .about-header h1 {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+    
+    .about-header p {
+        font-size: 1.2em;
+        color: #7f8c8d;
+    }
+    
+    .features-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 40px 0;
+    }
+    
+    .feature-card {
+        width: 30%;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        background: white;
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .feature-icon {
+        font-size: 2.5em;
+        color: #3498db;
+        margin-bottom: 15px;
+    }
+    
+    .feature-card h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+    
+    .stats-section {
+        background: #3498db;
+        color: white;
+        padding: 50px 0;
+        text-align: center;
+        margin: 40px 0;
+        border-radius: 8px;
+    }
+    
+    .stat-item {
+        display: inline-block;
+        margin: 0 30px;
+    }
+    
+    .stat-number {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .team-section {
+        margin: 50px 0;
+    }
+    
+    .team-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+    
+    .team-member {
+        width: 200px;
+        text-align: center;
+    }
+    
+    .member-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 3px solid #3498db;
+    }
+    
+    .cta-section {
+        text-align: center;
+        padding: 40px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 50px;
+    }
+    
+    .cta-button {
+        display: inline-block;
+        padding: 12px 30px;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: background 0.3s ease;
+    }
+    
+    .cta-button:hover {
+        background: #2980b9;
+    }
+</style>
 
-{% endblock  %}
+<div class="about-container">
+    <div class="about-header">
+        <h1>Про платформу GFGN</h1>
+        <p>Інноваційне рішення для сучасних трейдерів</p>
+    </div>
+    
+    <section>
+        <h2>Наша місія</h2>
+        <p>GFGN - це провідна трейдингова платформа, створена для того, щоб надати трейдерам усі необхідні інструменти для успішної роботи на фінансових ринках. Ми поєднуємо передові технології, аналітичні інструменти та зручний інтерфейс, щоб зробити трейдинг доступним і ефективним для всіх.</p>
+    </section>
+    
+    <div class="features-section">
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Розширена аналітика</h3>
+            <p>Отримуйте доступ до детальних аналітичних звітів, технічних індикаторів та прогнозів ринку в реальному часі.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Швидкі угоди</h3>
+            <p>Наша система обробляє угоди за 0.05 секунди, гарантуючи найкращі ціни та мінімальні спреди.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Надійність</h3>
+            <p>Ваші активи захищені передовими методами шифрування та зберігаються на ізольованих рахунках.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Мобільний додаток</h3>
+            <p>Торгуйте будь-де з нашим додатком, який надає повний функціонал платформи у вашому смартфоні.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🎓</div>
+            <h3>Навчання</h3>
+            <p>Доступ до ексклюзивних навчальних матеріалів, вебінарів та персонального менторства.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>Глобальний охоплення</h3>
+            <p>Торгуйте на 50+ світових біржах та отримуйте доступ до 10,000+ фінансових інструментів.</p>
+        </div>
+    </div>
+    
+    <div class="stats-section">
+        <div class="stat-item">
+            <div class="stat-number">150,000+</div>
+            <div class="stat-label">Активних користувачів</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">$5B+</div>
+            <div class="stat-label">Щоденний обсяг торгів</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">2025</div>
+            <div class="stat-label">Рік заснування</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Підтримка</div>
+        </div>
+    </div>
+    
+    <div class="team-section">
+        <h2 style="text-align: center; margin-bottom: 30px;">Наша команда</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <img src="photo_2025-05-26_00-47-23.jpg" alt="Коцюба Гордій" class="member-photo">
+                <h3>Коцюба Гордій</h3>
+                <p>Засновник & CEO</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="cta-section">
+        <h2>Готові почати свій трейдинговий шлях з GFGN?</h2>
+        <p>Зареєструйтеся за хвилину та отримайте доступ до всіх можливостей платформи</p>
+        <a href="#" class="cta-button">Спробувати безкоштовно</a>
+    </div>
+</div>
+
+{% endblock %}

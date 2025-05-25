@@ -1,10 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Create New Topic</h2>
+  <h2>Створити новий форум</h2>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Create</button>
+    <div class="form-group">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+    <div class="form-group">
+      {{ form.content.label_tag }}
+      {{ form.content }}
+      {{ form.content.errors }}
+    </div>
+    
+    <!-- Активна галочка анонімного режиму -->
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="anonymous_mode" name="anonymous_mode">
+      <label class="form-check-label" for="anonymous_mode">Анонімний режим</label>
+      <small class="form-text text-muted"></small>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Створити форум</button>
   </form>
+
+  <style>
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-check {
+      margin: 1.2rem 0;
+    }
+    .form-check-input {
+      position: relative;
+      margin-left: 0;
+      margin-right: 0.5rem;
+    }
+    .form-text.text-muted {
+      display: block;
+      margin-top: 0.3rem;
+      color: #6c757d;
+      font-size: 0.85em;
+    }
+  </style>
 {% endblock %}

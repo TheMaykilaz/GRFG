@@ -23,7 +23,7 @@
             <span class="menu-icon">
               {% if item.name == "Форум" %}<i class="fas fa-comments"></i>
               {% elif item.name == "Статті" %}<i class="fas fa-newspaper"></i>
-              {% elif item.name == "БрейкінгНьюс" %}<i class="fas fa-bolt"></i>
+              {% elif item.name == "Індекси" %}<i class="fas fa-bolt"></i>
               {% else %}<i class="fas fa-link"></i>{% endif %}
             </span>
             <span class="menu-text">{{ item.name }}</span>
@@ -85,19 +85,19 @@
 
     <!-- Таблиця з чіткими заголовками -->
     <div class="table-section">
-      <h2 class="section-title">All Cryptocurrencies</h2>
+      <h2 class="section-title">Вся криптовалюта</h2>
       <div class="table-container">
         <table class="crypto-table">
           <thead>
             <tr>
-              <th class="column-name">Name</th>
-              <th class="column-symbol">Symbol</th>
-              <th class="column-price">Price (USD)</th>
+              <th class="column-name">Назва</th>
+              <th class="column-symbol">Символ</th>
+              <th class="column-price">Ціна (USD)</th>
               <th class="column-change">1h %</th>
               <th class="column-change">24h %</th>
               <th class="column-change">7d %</th>
-              <th class="column-cap">Market Cap</th>
-              <th class="column-volume">Volume (24h)</th>
+              <th class="column-cap">Капіталізація ринку</th>
+              <th class="column-volume">Обсяг (24h)</th>
             </tr>
           </thead>
           <tbody id="crypto-data">
@@ -112,9 +112,41 @@
   </section>
 
   <aside class="sidebar">
-    <!-- Бічна панель -->
-  </aside>
-</div>
+  <!-- Домінування криптовалют -->
+  <div class="sidebar-widget">
+    <h3 class="widget-title">
+      <i class="fas fa-chart-pie"></i> Домінування ринку
+    </h3>
+    <div class="domination-container">
+      {{ alldom|safe }}
+    </div>
+    <div class="total-market-cap">
+      <span class="cap-label">Загальна капіталізація:</span>
+      <span class="cap-value">${{ total_cap }}</span>
+    </div>
+  </div>
+
+  <!-- Fear & Greed Index -->
+  <div class="sidebar-widget">
+    <h3 class="widget-title">
+      <i class="fas fa-brain"></i> Fear & Greed Index
+    </h3>
+    {% if fg %}
+      <div class="fg-index" data-value="{{ fg.0 }}">
+        <div class="fg-meter">
+          <div class="fg-progress"></div>
+        </div>
+        <div class="fg-info">
+          <span class="fg-value">{{ fg.0 }}</span>
+          <span class="fg-classification">{{ fg.1 }}</span>
+        </div>
+      </div>
+    {% else %}
+      <p class="fg-error">Дані недоступні</p>
+    {% endif %}
+  </div>
+
+</aside>
 
 <script>
   // Глобальні змінні для елементів DOM

@@ -1,7 +1,13 @@
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
 .index-table {
     width: 100%;
+    min-width: 1000px; /* Мінімальна ширина для всіх стовпців */
     border-collapse: collapse;
-    margin-top: 20px;
     color: #fff;
     font-family: 'Segoe UI', sans-serif;
 }
@@ -10,11 +16,14 @@
     border: 1px solid #444;
     padding: 12px;
     text-align: left;
+    white-space: nowrap; /* Забороняємо перенос тексту */
 }
 
 .index-table th {
     background-color: #111;
     font-weight: bold;
+    position: sticky;
+    top: 0;
 }
 
 .index-table tr:nth-child(even) {
@@ -35,4 +44,9 @@
 
 .index-table .neutral {
     color: #ccc;
+}
+
+.error-message {
+    text-align: center;
+    color: #ff4d4d;
 }

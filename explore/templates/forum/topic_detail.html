@@ -2,38 +2,98 @@
 
 {% block content %}
 <div class="container">
-    <h2>{{ topic.title }}</h2>
-    <p>{{ topic.description }}</p>
-
-    <hr>
-
-    <h3>Коментарі</h3>
-    {% for comment in comments %}
-        <div class="comment" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <p><strong>{{ comment.user }}</strong> — {{ comment.created_at }}</p>
-            <p>{{ comment.content }}</p>
-
-            <form method="post" action="{% url 'explore:vote-comment' comment.pk %}">
-                {% csrf_token %}
-                <button type="submit" name="vote" value="up">👍</button>
-                <button type="submit" name="vote" value="down">👎</button>
-                <span>Votes: {{ comment.vote_count }}</span>
-            </form>
+    <!-- Заголовок та контент теми -->
+    <div class="topic-header" style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+        <h2>{{ topic.title }}</h2>
+        <div class="meta" style="color: #6c757d; margin-bottom: 10px;">
+            <span>Автор: {% if topic.author %} Анонім {% else %}Не АНонім {% endif %}</span> |
+            <span>Створено: {{ topic.created_at|date:"d.m.Y H:i" }}</span>
         </div>
-    {% empty %}
-        <p>Коментарів ще немає.</p>
-    {% endfor %}
+        <div class="content" style="margin-top: 15px;">
+            {{ topic.content|linebreaks }}
+        </div>
+    </div>
 
-    <hr>
+    <!-- Блок коментарів -->
+    <div class="comments-section">
+        <h3>Коментарі ({{ comments.count }})</h3>
+        
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment" style="border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                    <div class="comment-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong>{% if comment.user %}{{ comment.user.username }}{% else %}Анонім{% endif %}</strong>
+                        <span style="color: #6c757d;">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <div class="comment-body" style="margin-bottom: 10px;">
+                        {{ comment.content|linebreaks }}
+                    </div>
+                    <div class="comment-votes">
+                        <form method="post" action="{% url 'explore:vote-comment' comment.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="vote" value="up" style="background: none; border: none; cursor: pointer;">👍</button>
+                            <button type="submit" name="vote" value="down" style="background: none; border: none; cursor: pointer;">👎</button>
+                            <span>Рейтинг: {{ comment.vote_count }}</span>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">Коментарів ще немає. Будьте першим!</div>
+        {% endif %}
+    </div>
 
-    <h3>Додати коментар</h3>
-    <form method="post" action="{% url 'explore:add-comment' topic.pk %}">
-        {% csrf_token %}
-        <textarea name="content" rows="4" cols="50" required></textarea><br>
-        <button type="submit">Додати</button>
-    </form>
+    <!-- Форма додавання коментаря -->
+    <div class="add-comment" style="margin-top: 30px;">
+        <h3>Додати коментар</h3>
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'explore:add-comment' topic.pk %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea name="content" class="form-control" rows="4" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Відправити</button>
+            </form>
+        {% else %}
+            <div class="alert alert-warning">
+                Щоб залишати коментарі, будь ласка <a href="{% url 'account:login' %}?next={{ request.path }}">увійдіть</a>.
+            </div>
+        {% endif %}
+    </div>
 
-    <br>
-    <a href="{% url 'explore:forum-topic-list' %}">← Назад до списку тем</a>
+    <!-- Посилання назад -->
+    <div style="margin-top: 30px;">
+        <a href="{% url 'explore:forum-topic-list' %}" class="btn btn-outline-secondary">← Назад до списку тем</a>
+    </div>
 </div>
+
+<style>
+    .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+    .btn-outline-secondary {
+        border: 1px solid #6c757d;
+        color: #6c757d;
+    }
+    .alert {
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+    .alert-info {
+        background-color: #e7f5fe;
+        color: #0c5460;
+    }
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+</style>
 {% endblock %}

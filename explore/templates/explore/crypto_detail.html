@@ -20,21 +20,21 @@
     
     <div class="details-grid">
         <div class="detail-card">
-            <h3>Market Cap</h3>
+            <h3>Капіталізація ринку</h3>
             <p>${{ crypto.market_cap|intcomma }}</p>
         </div>
         <div class="detail-card">
-            <h3>Volume (24h)</h3>
+            <h3>обсяг (24h)</h3>
             <p>${{ crypto.volume_24h|intcomma }}</p>
         </div>
         <div class="detail-card">
-            <h3>1h Change</h3>
+            <h3>1h зміна</h3>
             <p class="{% if crypto.percent_1h >= 0 %}positive{% else %}negative{% endif %}">
                 {{ crypto.percent_1h|floatformat:2 }}%
             </p>
         </div>
         <div class="detail-card">
-            <h3>7d Change</h3>
+            <h3>7d зміна</h3>
             <p class="{% if crypto.percent_7d >= 0 %}positive{% else %}negative{% endif %}">
                 {{ crypto.percent_7d|floatformat:2 }}%
             </p>
@@ -64,6 +64,6 @@
     </div>
 </div>
     
-    <a href="{% url 'explore:explore' %}" class="back-button">← Back to All Cryptos</a>
+    <a href="{% url 'explore:explore' %}" class="back-button">← повернутися до криптовалюти</a>
 </div>
 {% endblock %}

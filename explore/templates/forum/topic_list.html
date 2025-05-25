@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2><strong>Forums</strong> > Counter-Strike</h2>
+  <h2><strong>Форуми</strong> > активні:</h2>
 
   {% if user.is_authenticated %}
-    <a href="{% url 'explore:create-forum-topic' %}" class="btn btn-primary" style="margin: 10px 0; display: inline-block;">➕ Create Topic</a>
+    <a href="{% url 'explore:create-forum-topic' %}" class="btn btn-primary" style="margin: 10px 0; display: inline-block;">➕ Створити форум</a>
   {% else %}
-    <p><a href="{% url 'account:login' %}">Login</a> to create a topic.</p>
+    <p><a href="{% url 'account:login' %}">Зареєструватися</a> для створення форуму.</p>
   {% endif %}
 
   {% if topics %}
-    <table>
+    <table class="forum-table">
       <thead>
         <tr>
           <th>Topic</th>
@@ -22,15 +22,42 @@
       <tbody>
         {% for topic in topics %}
           <tr>
-            <td><a href="{% url 'explore:forum-topic-detail' topic.pk %}">{{ topic.title }}</a></td>
-            <td>{{ topic.comments.count }}</td>
-            <td>{{ topic.author.username }}</td>
+            <td>
+              <a href="{% url 'explore:forum-topic-detail' topic.pk %}">{{ topic.title }}</a>
+            </td>
+            <td>{{ topic.comment_count }}</td>
+            <td>
+              {% if topic.author %}
+              Анонім
+              {% else %}
+                {{ topic.author.username }}
+              {% endif %}
+            </td>
             <td>{{ topic.created_at|timesince }} ago</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   {% else %}
-    <p>No topics yet. Be the first to start a discussion!</p>
+    <p>немає ніяких форумівю Будь першим!</p>
   {% endif %}
+
+  <style>
+    .forum-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .forum-table th, .forum-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .forum-table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    .forum-table tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
 {% endblock %}

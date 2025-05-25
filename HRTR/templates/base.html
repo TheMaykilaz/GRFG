@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="{% static  'mainsite/img/icon.jpg' %}" type="image/jpeg">
     <meta charset="UTF-8">
     <title>{{ title|capfirst }}</title>
     <link rel="stylesheet" href="{% static 'HRTR/css/base.css' %}">
@@ -206,7 +207,19 @@
 
         .logout-btn:hover {
             text-decoration: underline;
+            
         }
+        
+        .site-icon {
+            height: 60px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .site-icon:hover {
+            transform: scale(1.1);
+        }
+
     </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -217,6 +230,10 @@
         <a href="{% url 'explore:explore' %}">Дізнатися</a>
         <a href="{% url 'mainsite:about' %}">Про нас</a>
     </nav>
+
+    <div class="site-icon" style="position: absolute; left: 150px; top: 10px;">
+        <img src="{% static  'mainsite/img/icon.jpg' %}" alt="Символ" style="height: 30px; width: auto;">
+    </div>
 
     <div class="user-box">
         {% if user.is_authenticated %}

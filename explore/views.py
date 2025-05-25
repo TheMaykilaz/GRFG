@@ -140,7 +140,7 @@ def forum_topic_list(request):
 
 def forum_topic_detail(request, pk):
     topic = get_object_or_404(ForumTopic, pk=pk)
-    comments = topic.forumcomment_set.order_by('created_at')  
+    comments = topic.comments.order_by('created_at')  # Використовуємо новий related_name
     return render(request, 'forum/topic_detail.html', {
         'topic': topic,
         'comments': comments

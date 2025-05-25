@@ -32,7 +32,7 @@ class CryptoArticle(models.Model):
 class ForumTopic(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,  related_name='topics')
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -42,7 +42,7 @@ class ForumTopic(models.Model):
         return self.comments.count()
 
 class ForumComment(models.Model):
-    topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE, default=1)
+    topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE, default=1, related_name='comments')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
@@ -64,4 +64,4 @@ class ForumCommentVote(models.Model):
     is_upvote = models.BooleanField()
 
     class Meta:
-        unique_together = ('comment', 'user')  # 1 vote per user per comment
+        unique_together = ('comment', 'user')  
