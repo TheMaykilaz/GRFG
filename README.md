@@ -1,1 +1,1 @@
-to enter the site: git clone 
+to enter the site: git clone https://github.com/TheMaykilaz/GRFG.git
